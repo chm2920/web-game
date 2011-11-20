@@ -1,7 +1,7 @@
 
 
-//var files = ['util', 'user', 'lobby', 'chat'];
-var files = ['util'];
+var files = ['util', 'user', 'lobby', 'chat'];
+//var files = ['util'];
 var arrT = [];
 for(var i = 0, l = files.length; i < l; i ++){
 	arrT.push('<script type="text/javascript" src="js/' + files[i] + '.js"></script>');

@@ -117,7 +117,7 @@ var handshake = function(sock, data){
 var server = net.createServer(function(conn){
 	lobby.connections.push(conn);
 	var handshaked = false;
-	var response = {};	
+	var response = {}, timer;	
 	
 	function sendMsg(msg){
 		msg = JSON.stringify(msg);
@@ -153,12 +153,22 @@ var server = net.createServer(function(conn){
 					case 'req':						
 						switch(data.action){
 							case 'users':
-								response['type'] = 'msg';
-								response['data'] = lobby.users.join(',');
-								sendMsg(response);
+								timer = setInterval(function(){
+									response['type'] = 'msg';
+									response['action'] = 'users';
+									var hsh = {};
+									lobby.users.forEach(function(user){
+										hsh[user.username] = [user.win, user.lost, user.desk, user.status];
+									});
+									response['data'] = hsh;
+									sendMsg(response);
+								}, 1000);
 								break;
 						}
-						break;						
+						break;	
+					case 'admin':
+						// to console admin
+						break;					
 					default:
 						lobby.broadcast(JSON.stringify(data));
 						break;
@@ -166,6 +176,7 @@ var server = net.createServer(function(conn){
 			}
 		})
 		.on('close', function(){
+			clearInterval(timer);
 			lobby.logout(conn);
 			log('sock close');
 		})
@@ -176,13 +187,8 @@ var server = net.createServer(function(conn){
 			console.log('timeout');
 		})
 		.on('connect', function(){
-			var addr = conn.remoteAddress;
-			var username = addr.replace(/\./g, '_');
-			lobby.users.push(username);
-			response['type'] = 'msg';
-			response['data'] = username + ' join in ';
-			lobby.except(conn, JSON.stringify(response));
-			console.log('connect: ', server.connections, ':', addr);
+			lobby.join(conn);
+			console.log('connect: ', server.connections);
 		});
 });
 
