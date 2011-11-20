@@ -1,0 +1,35 @@
+
+*{margin:0;padding:0;}
+body{margin:0;padding:0;font-size:12px;color:#FFF;text-align:center;font-family:SimSun;background:url(/images/bg.jpg);}
+form,ul,ul li,p{margin:0;padding:0;}
+ul, ul li{list-style:none;}
+a{color:#0092D2;text-decoration:none;}
+a:hover{color:#fc4c0f;text-decoration:underline;}
+img{border:0px;}
+.clearfix:after {content:"."; display:block; height:0; clear:both; visibility:hidden; }
+* html>body .clearfix { display:inline-block; width:100%; }
+* html .clearfix { height:1%; /* End hide from IE-mac */ } 
+/* ie7 hack*/ 
+*+html .clearfix { min-height:1%; } 
+.clearfix{zoom:1;} 
+
+#wapper{width:1000px;margin:0 auto;text-align: left;}
+header{height:100px;}
+h1{float:left;padding:40px 0 0 40px;font-size:18px;font-weight:bold;}
+.info{float:right;margin:40px 80px 0 0;}
+.desks{float:left;width:720px;border:1px solid #CCC;}
+	.desks li{float:left;width:240px;padding:20px 0;}
+	.desks li i{float:left;margin:20px;border:1px solid #EEE;width:36px;height:36px;display: block;cursor:pointer;}
+	.desks li span{float: left;border: 1px solid #444;width:80px;height:50px;padding-top:30px;text-align:center;display: block;}
+.side{float:right;width:260px;}
+	.uInfo{height:200px;border:1px solid #CCC;}
+		.uInfo ul{padding: 8px 0 8px 10px;}
+		.uInfo ul li{height:22px;line-height:22px;}
+		.uInfo ul li label{float:left;width:68px;display:block;font-weight:bold;text-align:right;padding-right:8px;}
+		.uInfo p{height:30px;line-height:30px;padding-left:20px;font-size:18px;color:#FF0000;}
+	.chat{margin-top:10px;height:204px;border:1px solid #CCC;}
+		.chatList{margin:4px 5px;padding:2px 4px;height:168px;width:250px;line-height:18px;}
+		.chatForm{height:30px;line-height:30px;}
+		.iInput{float:left;margin-left:6px;border:1px solid #EEE;font-size:12px;padding:0 2px;width:186px;height:22px;line-height:22px;}
+		.btnInput{float:left;margin-left:5px;border:1px solid #EEE;font-size:12px;padding:3px;width:58px;cursor:pointer;}
+footer{margin-top:20px;padding:20px;border-top:1px solid #CCC;}
