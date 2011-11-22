@@ -19,7 +19,11 @@ h1{float:left;padding:40px 0 0 40px;font-size:18px;font-weight:bold;}
 .info{float:right;margin:40px 80px 0 0;}
 .desks{float:left;width:720px;border:1px solid #CCC;}
 	.desks li{float:left;width:240px;padding:20px 0;}
-	.desks li i{float:left;margin:20px;border:1px solid #EEE;width:36px;height:36px;display: block;cursor:pointer;}
+	.desks li div{float:left;margin:20px 0px;width:72px;text-align:center;}
+	.desks li div.L{}
+	.desks li div.R{}
+	.desks li i{margin:0 auto;border:1px solid #EEE;width:36px;height:36px;display: block;cursor:pointer;}
+	.desks li p{height:22px;line-height:22px;width:72px;white-space:nowrap;overflow:hidden;}
 	.desks li span{float: left;border: 1px solid #444;width:80px;height:50px;padding-top:30px;text-align:center;display: block;}
 .side{float:right;width:260px;}
 	.uInfo{height:200px;border:1px solid #CCC;}

@@ -4,6 +4,8 @@ var Util = (function(){
 	var server = 'localhost';
 	var port = 27688;
 	
+	var userList;
+	
 	function alert(type, msg){
 		
 	}
@@ -42,11 +44,18 @@ var Util = (function(){
 	}
 	
 	function setUserList(users){
-		var userList = [];
-		for(var u in users){
-			userList.push(u);
+		var users = [], desk = {};
+		for(var u in userList){
+			users.push(u);
+			if(u.desk && (u.status == 'L' || u.status == 'R')){
+				$('#desk' + u.desk + ' .' + u.status + ' p').text(u.username);
+			}
 		}
-		$('#userList').empty().html(userList.join('\n'));
+		$('#userList').empty().html(users.join('\n'));
+	}
+	
+	function sit(data){
+		$('#desk' + data.desk + ' .' + data.a + ' p').text(data.username);
 	}
 	
 	return {
@@ -70,10 +79,14 @@ var Util = (function(){
 					case 'msg':
 						switch(data.action){
 							case 'users':
-								setUserList(data.data);
+								userList = data.data;
+								setUserList();
 								break;
 							case 'tip':
 								info('tip', data.data);
+								break;
+							case 'sit':
+								sit(data.data);
 								break;
 							default:
 								info(e.type, e.data);
@@ -88,6 +101,17 @@ var Util = (function(){
 			bind();
 		},
 		send: function(data){
+			socket.send(JSON.stringify(data));
+		},
+		sitDown: function(desk, a){
+			var data = {
+				'type': 'cmd',
+				'action': 'sit',
+				'data': {
+					'desk': desk,
+					'a': a
+				}
+			};
 			socket.send(JSON.stringify(data));
 		}
 	}

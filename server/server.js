@@ -117,7 +117,8 @@ var handshake = function(sock, data){
 var server = net.createServer(function(conn){
 	lobby.connections.push(conn);
 	var handshaked = false;
-	var response = {}, timer;	
+	var response = {}, timer;
+	var username;
 	
 	function sendMsg(msg){
 		msg = JSON.stringify(msg);
@@ -145,8 +146,19 @@ var server = net.createServer(function(conn){
 				switch(data.type){
 					case 'cmd':
 						switch(data.action){
-							case 'users':
-								sendMsg(lobby.users);
+							case 'sit':
+								response = {};
+								response['type'] = 'msg';
+								response['action'] = 'sit';
+								response['data'] = {
+									'username': username,
+									'desk': data.data.desk,
+									'a': data.data.a
+								};
+								log(data.data.desk);
+								log(username);
+								log(data.data.a);
+								sendMsg(response);
 								break;								
 						}
 						break;
@@ -154,6 +166,7 @@ var server = net.createServer(function(conn){
 						switch(data.action){
 							case 'users':
 								timer = setInterval(function(){
+									response = {};
 									response['type'] = 'msg';
 									response['action'] = 'users';
 									var hsh = {};
@@ -187,7 +200,7 @@ var server = net.createServer(function(conn){
 			console.log('timeout');
 		})
 		.on('connect', function(){
-			lobby.join(conn);
+			username = lobby.join(conn);
 			console.log('connect: ', server.connections);
 		});
 });

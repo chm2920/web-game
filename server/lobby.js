@@ -39,6 +39,7 @@ exports.join = function(conn){
 	response['data'] = username + ' join in ';
 	except(conn, JSON.stringify(response));
 	console.log('connect: ', addr);
+	return username;
 }
 
 exports.broadcast = function(msg){
