@@ -13,19 +13,49 @@
 				<div id="info" class="info"></div>
 			</header>
 			<article class="clearfix">
-				<ul id="desks" class="desks">
-					<li>
-						<div class="L">
-							<i></i>
-							<p>adsf</p>
+				<div class="main">
+					<ul id="desks" class="desks">
+						<li>
+							<div class="L">
+								<i></i>
+								<p>adsf</p>
+							</div>
+							<span></span>
+							<div class="R">
+								<i></i>
+								<p>adsf</p>
+							</div>
+						</li>
+					</ul>
+					<div id="board" class="board">
+						<ul class="turn">
+							<li>
+								<h4>De</h4>
+								<p>29</p>
+							</li>
+							<li>
+								<h4>Me</h4>
+								<p>29</p>
+							</li>
+						</ul>
+						<div class="game" id="game">
+							<table id="gameTB" class="gameTB">
+								<tr>
+									<td></td>
+								</tr>
+							</table>
 						</div>
-						<span></span>
-						<div class="R">
-							<i></i>
-							<p>adsf</p>
+						<div class="gameInfo">
+							<div id="selected" class="selected"></div>
+							<ul class="op">
+								<li><button id="ready">Ready</button></li>
+								<li><button id="leave">Leave</button></li>
+								<li><button id="lost">Lost</button></li>
+								<li><button id="peace">Peace</button></li>
+							</ul>
 						</div>
-					</li>
-				</ul>
+					</div>
+				</div>
 				<div class="side">
 					<div class="uInfo">
 						<div id="Me">
@@ -34,7 +64,7 @@
 								<li><label>Win:</label><i id="win">1</i></li>
 								<li><label>Lost:</label><i id="lost">1</i></li>
 							</ul>
-							<div id="status"></div>
+							<div id="status" class="status">Ready</div>
 						</div>
 						<p>VS</p>
 						<div id="">
@@ -43,7 +73,7 @@
 								<li><label>Win:</label><i id="d_win">1</i></li>
 								<li><label>Lost:</label><i id="d_lost">1</i></li>
 							</ul>
-							<div id="d_status"></div>
+							<div id="d_status" class="status">Ready</div>
 						</div>
 					</div>
 					<div class="users" id="users" style="display:none;">
