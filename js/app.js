@@ -24,6 +24,10 @@ function showBoard(){
 	$('#board').animate({
 		'left': '0',
 	});
+	$('#ready').show();
+	$('#leave').show();
+	$('#lost').hide();
+	$('#peace').hide();
 }
 
 function setDesks(){
@@ -43,18 +47,14 @@ function setDesks(){
 	}
 	$('#desks').empty().html(arrT.join(''));
 	$('#desks i').click(function(){
-		// var p = $(this).parent();
-		// var desk = p.parent().attr('id').replace('desk', '');
-		// var a = p[0].className;
-		// Util.sitDown(desk, a);
-	// });
-	// $('#ready').click(function(){
-		showBoard();
-		$('#ready').show();
-		$('#leave').show();
-		$('#lost').hide();
-		$('#peace').hide();
+		var p = $(this).parent();
+		var desk = p.parent().attr('id').replace('desk', '');
+		var a = p[0].className;
+		Util.sitDown(desk, a);
 	});
+	// $('#ready').click(function(){
+		//showBoard();
+	//});
 	$('#ready').click(function(){
 		$('#ready').hide();
 		$('#leave').hide();

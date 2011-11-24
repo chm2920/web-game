@@ -1,6 +1,6 @@
 
 var net = require('net');
-var crypto = require('crypto');
+var sha1 = require("crypto").createHash("sha1");
 var fs = require('fs');
 var util = require('util');
 
@@ -73,16 +73,13 @@ var handshake = function(sock, data){
 	
 	function challenge(key){
 		key += '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
-		//var sum = get_part(key1) + get_part(key2) + head.toString('binary');
-		//return crypto.createHash('md5').update(sum).digest('binary');
-		key = crypto.createHash('md5').update(key).digest('binary');
+		key = sha1.update(key).digest("base64");
 		return key;
 	}
 
 	var req = parse(data.toString());
 	var h = req.headers;
 	var accept = challenge(h['sec-websocket-key']);
-	accept = challenge('dGhlIHNhbXBsZSBub25jZQ==');
 	var headers = [
 		'HTTP/1.1 101 Switching Protocols',
 		'Upgrade: websocket',
@@ -92,8 +89,6 @@ var handshake = function(sock, data){
 	];
 	var line = '\r\n';	
 	var output = headers.join(line);
-	log(output);
-	log('s3pPLMBiTxaQ9kYGzzhZRbK+xOo=');
 	sock.write(output, 'binary');
 };
 

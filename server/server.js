@@ -147,17 +147,16 @@ var server = net.createServer(function(conn){
 					case 'cmd':
 						switch(data.action){
 							case 'sit':
+								var re = lobby.sit(conn, data.data.desk, data.data.side);
 								response = {};
 								response['type'] = 'msg';
 								response['action'] = 'sit';
 								response['data'] = {
 									'username': username,
 									'desk': data.data.desk,
-									'a': data.data.a
+									'side': data.data.side,
+									're': re
 								};
-								log(data.data.desk);
-								log(username);
-								log(data.data.a);
 								sendMsg(response);
 								break;								
 						}
@@ -171,7 +170,7 @@ var server = net.createServer(function(conn){
 									response['action'] = 'users';
 									var hsh = {};
 									lobby.users.forEach(function(user){
-										hsh[user.username] = [user.win, user.lost, user.desk, user.status];
+										hsh[user.username] = [user.win, user.lost, user.desk, user.side];
 									});
 									response['data'] = hsh;
 									sendMsg(response);

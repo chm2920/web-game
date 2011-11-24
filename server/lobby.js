@@ -9,7 +9,17 @@ function User(conn, username){
 	this.lost = 0;
 	
 	this.desk = 0;
+	this.side = '';
 	this.status = '';
+}
+
+User.find = function(conn){
+	users.forEach(function(user){
+		if(user.conn == conn){
+			return user;
+		}
+	});
+	return null;
 }
 
 function except(conn, msg){
@@ -52,11 +62,26 @@ exports.broadcast = function(msg){
 
 exports.logout = function(conn){
 	connections.splice(connections.indexOf(conn), 1);
+	var u = User.find(conn);
+	users.splice(users.indexOf(u), 1);
+}
+
+exports.sit = function(conn, desk, side){
 	var u;
-	users.forEach(function(user){
+	for(var i = 0, l = users.length; i < l; i ++){
+		var user = users[i];
+		if(user.desk == desk && user.side == side){
+			return -1;
+		}
 		if(user.conn == conn){
 			u = user;
-		}
-	});
-	users.splice(users.indexOf(u), 1);
+		}		
+	}
+	if(u){
+		u.desk = desk;
+		u.side = side;
+		return 1;		
+	} else {
+		return -2;
+	}
 }

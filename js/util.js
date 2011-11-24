@@ -43,19 +43,27 @@ var Util = (function(){
 		$('#users').hide();
 	}
 	
-	function setUserList(users){
+	function setUserList(){
 		var users = [], desk = {};
+		$('#desks p').empty();
 		for(var u in userList){
-			users.push(u);
-			if(u.desk && (u.status == 'L' || u.status == 'R')){
-				$('#desk' + u.desk + ' .' + u.status + ' p').text(u.username);
+			var arr = userList[u];
+			var win = arr[0], lost = arr[1], desk = arr[2], side = arr[3];
+			if(desk == 0){
+				users.push(u + ' : ' + win + ' / ' + lost);
+			} else {
+				users.push(u + ' : ' + win + ' / ' + lost + ' at ' + desk + ' ' + side);
+			}			
+			if(desk != 0 && (side == 'L' || side == 'R')){
+				$('#desk' + desk + ' .' + side + ' p').text(u);
 			}
 		}
 		$('#userList').empty().html(users.join('\n'));
 	}
 	
 	function sit(data){
-		$('#desk' + data.desk + ' .' + data.a + ' p').text(data.username);
+		$('#desk' + data.desk + ' .' + data.side + ' p').text(data.username);
+		showBoard();
 	}
 	
 	return {
@@ -86,7 +94,12 @@ var Util = (function(){
 								info('tip', data.data);
 								break;
 							case 'sit':
-								sit(data.data);
+								info('tip', data.data.re);
+								if(parseInt(data.data.re, 10) > 0){
+									sit(data.data);
+								} else {
+									window.alert('have in sit');
+								}
 								break;
 							default:
 								info(e.type, e.data);
@@ -103,13 +116,13 @@ var Util = (function(){
 		send: function(data){
 			socket.send(JSON.stringify(data));
 		},
-		sitDown: function(desk, a){
+		sitDown: function(desk, side){
 			var data = {
 				'type': 'cmd',
 				'action': 'sit',
 				'data': {
 					'desk': desk,
-					'a': a
+					'side': side
 				}
 			};
 			socket.send(JSON.stringify(data));
