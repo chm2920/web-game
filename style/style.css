@@ -40,15 +40,15 @@ h1{float:left;padding:20px 0 0 40px;font-size:18px;font-weight:bold;}
 			.op li{float:left;}
 			.op li button{width:90px;margin:0 8px;padding:8px 0;}
 .side{float:right;width:260px;}
-	.uInfo{height:200px;border:1px solid #CCC;}
+	.uInfo{margin-bottom:10px;height:200px;border:1px solid #CCC;}
 		.uInfo ul{float:left;width:178px;padding: 8px 0 8px 10px;}
 		.uInfo ul li{height:22px;line-height:22px;}
 		.uInfo ul li label{float:left;width:68px;display:block;font-weight:bold;text-align:right;padding-right:8px;}
 		.uInfo p{clear:left;height:30px;line-height:30px;padding-left:20px;font-size:18px;color:#FF0000;}
 		.uInfo .status{float:left;padding-top:32px;width:50px;font-size:18px;color:#0092D2;}
-	.users{margin-top:10px;height:200px;border:1px solid #CCC;}
+	.users{margin-bottom:10px;height:200px;border:1px solid #CCC;}
 		.userList{margin:4px 5px;padding:2px 4px;height:192px;width:250px;line-height:18px;}
-	.chat{margin-top:10px;height:204px;border:1px solid #CCC;}
+	.chat{height:204px;border:1px solid #CCC;}
 		.chatList{margin:4px 5px;padding:2px 4px;height:168px;width:250px;line-height:18px;}
 		.chatForm{height:30px;line-height:30px;}
 		.iInput{float:left;margin-left:6px;border:1px solid #EEE;font-size:12px;padding:0 2px;width:186px;height:22px;line-height:22px;}

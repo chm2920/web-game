@@ -14,11 +14,11 @@ function User(conn, username){
 }
 
 User.find = function(conn){
-	users.forEach(function(user){
-		if(user.conn == conn){
-			return user;
+	for(var i = 0, l = users.length; i < l; i ++){
+		if(users[i].conn == conn){
+			return users[i];
 		}
-	});
+	}
 	return null;
 }
 
@@ -60,6 +60,16 @@ exports.broadcast = function(msg){
 	});
 }
 
+exports.sendMsg = function(conn, msg){
+	conn.write("\u0000", "binary");
+	conn.write(msg, 'utf8');
+	conn.write("\uffff", "binary");
+}
+
+exports.deskMsg = function(){
+	
+}
+
 exports.logout = function(conn){
 	connections.splice(connections.indexOf(conn), 1);
 	var u = User.find(conn);
@@ -67,21 +77,37 @@ exports.logout = function(conn){
 }
 
 exports.sit = function(conn, desk, side){
-	var u;
+	var u, user, re = 1;
 	for(var i = 0, l = users.length; i < l; i ++){
-		var user = users[i];
-		if(user.desk == desk && user.side == side){
-			return -1;
+		user = users[i];
+		if(user.desk == desk){
+			if(user.side == side){				
+				return -1; // have sit someone
+			} else {
+				if(user.conn != conn){
+					re += 1;					
+				}
+			}
 		}
 		if(user.conn == conn){
 			u = user;
-		}		
+		}
 	}
-	if(u){
-		u.desk = desk;
-		u.side = side;
-		return 1;		
-	} else {
-		return -2;
+	u.desk = desk;
+	u.side = side;
+	return re;
+}
+
+exports.getup = function(conn){
+	var u = User.find(conn);
+	var desk = u.desk;
+	u.desk = 0;
+	u.side = '';
+	u.status = '';
+	for(var i = 0, l = users.length; i < l; i ++){
+		if(users[i].desk == desk){
+			return users[i].conn;
+		}
 	}
+	return false;
 }

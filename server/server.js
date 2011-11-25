@@ -139,11 +139,35 @@ var server = net.createServer(function(conn){
 				data = JSON.parse(data);
 				var t = 'on data: ' + data.type + ' - ' + data.action;
 				if(data.data){
-					t += ' - ' + data.data;
+					t += ' - ' + util.inspect(data.data);
 				}
 				log(t);
 				
 				switch(data.type){
+					case 'req':						
+						switch(data.action){
+							case 'mine':
+								response = {};
+								response['type'] = 'msg';
+								response['action'] = 'mine';
+								response['data'] = {
+									'username': username
+								};
+								sendMsg(response);
+								timer = setInterval(function(){
+									response = {};
+									response['type'] = 'msg';
+									response['action'] = 'users';
+									var hsh = {};
+									lobby.users.forEach(function(user){
+										hsh[user.username] = [user.win, user.lost, user.desk, user.side];
+									});
+									response['data'] = hsh;
+									sendMsg(response);
+								}, 1000);
+								break;
+						}
+						break;
 					case 'cmd':
 						switch(data.action){
 							case 'sit':
@@ -157,25 +181,27 @@ var server = net.createServer(function(conn){
 									'side': data.data.side,
 									're': re
 								};
-								sendMsg(response);
-								break;								
-						}
-						break;
-					case 'req':						
-						switch(data.action){
-							case 'users':
-								timer = setInterval(function(){
+								lobby.broadcast(JSON.stringify(response));
+								break;
+							case 'getup':
+								var re = lobby.getup(conn);
+								if(re){
 									response = {};
 									response['type'] = 'msg';
-									response['action'] = 'users';
-									var hsh = {};
-									lobby.users.forEach(function(user){
-										hsh[user.username] = [user.win, user.lost, user.desk, user.side];
-									});
-									response['data'] = hsh;
-									sendMsg(response);
-								}, 1000);
-								break;
+									response['action'] = 'getup';
+									response['data'] = {
+										're': 'left'
+									};
+									lobby.sendMsg(re, JSON.stringify(response));
+								}
+								response = {};
+								response['type'] = 'msg';
+								response['action'] = 'getup';
+								response['data'] = {
+									're': 'true'
+								};
+								sendMsg(response);
+								break;							
 						}
 						break;	
 					case 'admin':
