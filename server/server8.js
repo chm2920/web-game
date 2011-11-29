@@ -39,6 +39,8 @@ var handshake = function(sock, data){
 		
 		function is_nil(s){return !s;}
 		
+		log(raw_head);
+		
 		var raw = raw_head.split('\r\n');
 		var headers = {};
 		
@@ -89,6 +91,7 @@ var handshake = function(sock, data){
 	];
 	var line = '\r\n';	
 	var output = headers.join(line);
+	log(output);
 	sock.write(output, 'binary');
 };
 
@@ -110,9 +113,17 @@ var server = net.createServer(function(conn){
 			if(!handshaked){
 				handshake(conn, data);
 				handshaked = true;
-				console.log('Handshaked >>>');				
+				console.log('Handshaked >>>');
+				response = {};
+				response['type'] = 'msg';
+				response['action'] = 'sit';
+				response['data'] = {
+					'a': 'a'
+				};
+				sendMsg(response);				
 			} else {
 				data = data.toString('utf8');
+				log(data);
 				data = data.split('\ufffd')[0].slice(1);
 				data = JSON.parse(data);
 				var t = 'on data: ' + data.type + ' - ' + data.action;

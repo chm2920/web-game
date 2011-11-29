@@ -27,9 +27,9 @@ function bind(){
 }
 
 window.onload = function(){
-	var server = 'localhost';
+	var server = 'dev.game.com';
 	var port = '27688';
-	socket = new WebSocket('ws://' + server + ':' + port + '/', 'test');
+	socket = new WebSocket('ws://' + server + ':' + port + '/chat', 'chat');
 	socket.onopen = function(e) {
 		onConnected();
 		var data = {

@@ -48,6 +48,8 @@ h1{float:left;padding:20px 0 0 40px;font-size:18px;font-weight:bold;}
 		.uInfo .status{float:left;padding-top:32px;width:50px;font-size:18px;color:#0092D2;}
 	.users{margin-bottom:10px;height:200px;border:1px solid #CCC;}
 		.userList{margin:4px 5px;padding:2px 4px;height:192px;width:250px;line-height:18px;}
+	.debug{margin-bottom:10px;height:200px;border:1px solid #CCC;}
+		.debugInfo{margin:4px 5px;padding:2px 4px;height:192px;width:250px;line-height:18px;}
 	.chat{height:204px;border:1px solid #CCC;}
 		.chatList{margin:4px 5px;padding:2px 4px;height:168px;width:250px;line-height:18px;}
 		.chatForm{height:30px;line-height:30px;}

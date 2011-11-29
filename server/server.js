@@ -116,16 +116,8 @@ var handshake = function(sock, data){
 
 var server = net.createServer(function(conn){
 	lobby.connections.push(conn);
-	var handshaked = false;
-	var response = {}, timer;
-	var username;
 	
-	function sendMsg(msg){
-		msg = JSON.stringify(msg);
-		conn.write("\u0000", "binary");
-		conn.write(msg, 'utf8');
-		conn.write("\uffff", "binary");
-	}
+	var handshaked = false;
 	
 	conn
 		.on('data', function(data){			
@@ -147,60 +139,17 @@ var server = net.createServer(function(conn){
 					case 'req':						
 						switch(data.action){
 							case 'mine':
-								response = {};
-								response['type'] = 'msg';
-								response['action'] = 'mine';
-								response['data'] = {
-									'username': username
-								};
-								sendMsg(response);
-								timer = setInterval(function(){
-									response = {};
-									response['type'] = 'msg';
-									response['action'] = 'users';
-									var hsh = {};
-									lobby.users.forEach(function(user){
-										hsh[user.username] = [user.win, user.lost, user.desk, user.side];
-									});
-									response['data'] = hsh;
-									sendMsg(response);
-								}, 1000);
+								lobby.getUInfo(conn);								
 								break;
 						}
 						break;
 					case 'cmd':
 						switch(data.action){
 							case 'sit':
-								var re = lobby.sit(conn, data.data.desk, data.data.side);
-								response = {};
-								response['type'] = 'msg';
-								response['action'] = 'sit';
-								response['data'] = {
-									'username': username,
-									'desk': data.data.desk,
-									'side': data.data.side,
-									're': re
-								};
-								lobby.broadcast(JSON.stringify(response));
+								lobby.sit(conn, data.data.deskno, data.data.side);
 								break;
 							case 'getup':
-								var re = lobby.getup(conn);
-								if(re){
-									response = {};
-									response['type'] = 'msg';
-									response['action'] = 'getup';
-									response['data'] = {
-										're': 'left'
-									};
-									lobby.sendMsg(re, JSON.stringify(response));
-								}
-								response = {};
-								response['type'] = 'msg';
-								response['action'] = 'getup';
-								response['data'] = {
-									're': 'true'
-								};
-								sendMsg(response);
+								lobby.getup(conn);
 								break;							
 						}
 						break;	
@@ -208,13 +157,12 @@ var server = net.createServer(function(conn){
 						// to console admin
 						break;					
 					default:
-						lobby.broadcast(JSON.stringify(data));
+						lobby.broadcast(data);
 						break;
 				}				
 			}
 		})
 		.on('close', function(){
-			clearInterval(timer);
 			lobby.logout(conn);
 			log('sock close');
 		})
@@ -225,7 +173,7 @@ var server = net.createServer(function(conn){
 			console.log('timeout');
 		})
 		.on('connect', function(){
-			username = lobby.join(conn);
+			lobby.join(conn);
 			console.log('connect: ', server.connections);
 		});
 });

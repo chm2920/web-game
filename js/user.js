@@ -1,27 +1,34 @@
 
-function User(){
-	this.username = 'null';
-	this.win = 0;
-	this.lost = 0;
-}
-
-User.prototype.login = function(){
-	$('#username').html(this.username);
-	$('#win').html(this.win);
-	$('#lost').html(this.lost);
-	$('#info').html('Loading ...').show();
-}
-
-var user = {
-	init: function(){
-		
-		
-		this.login();
+var User = {
+	username: '',
+	win: 0, 
+	lost: 0, 
+	
+	deskno: 0, 
+	side: null,
+	status: '',
+	
+	dUsername: '', 
+	dWin: '', 
+	dLost: '', 
+	dStatus: '',
+	
+	sitAt: function(deskno, side){
+		var data = {
+			'type': 'cmd',
+			'action': 'sit',
+			'data': {
+				'deskno': deskno,
+				'side': side
+			}
+		};
+		Lobby.send(data);
 	},
-	login: function(){
-		
-	},
-	logout: function(){
-		
+	getUp: function(){
+		var data = {
+			'type': 'cmd',
+			'action': 'getup'
+		};
+		Lobby.send(data);
 	}
 };
