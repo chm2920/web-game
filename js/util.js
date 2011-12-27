@@ -1,8 +1,0 @@
-
-var Util = {
-	log: function(){
-		
-	}
-};
-
-
