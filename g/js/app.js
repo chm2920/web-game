@@ -2,7 +2,7 @@
 
 function $(v){return document.getElementById(v);}
 
-var App = {
+var data = {
 	years: {
 		1941 : "0.6",
 		1942 : "0.8",
@@ -179,13 +179,49 @@ var App = {
 		71 : "此名生来大不同，公侯卿相在其中，一生自有逍遥福，富贵荣华极品隆",
 		72 : "此格世界罕有生，十代积善产此人，天上紫微来照命，统治万民乐太平"
 	},
+	arrHours : [{
+		text : '23：00--1：00',
+		value : "子"
+	}, {
+		text : '1：00--3：00',
+		value : "丑"
+	}, {
+		text : '3：00--5：00',
+		value : "寅"
+	}, {
+		text : '5：00--7：00',
+		value : "卯"
+	}, {
+		text : '7：00--9：00',
+		value : "辰"
+	}, {
+		text : '9：00--11：00',
+		value : "巳"
+	}, {
+		text : '11：00--13：00',
+		value : "午"
+	}, {
+		text : '13：00--15：00',
+		value : "未"
+	}, {
+		text : '15：00--17：00',
+		value : "申"
+	}, {
+		text : '17：00--19：00',
+		value : "酉"
+	}, {
+		text : '19：00--21：00',
+		value : "戌"
+	}, {
+		text : '21：00--23：00',
+		value : "亥"
+	}]
+};
+
+var App = {	
 	birth: {},
 	nongli: {},
 	init: function(){
-		this.setValue();
-		this.bind();
-	},
-	setValue: function(){
 		for( var i = 1960; i <= 2000; i ++){
 			var oOption = document.createElement("OPTION");
 			oOption.text = i;
@@ -198,68 +234,23 @@ var App = {
 			oOption.value = i;
 			$('month').add(oOption);
 		}
-		var arrDays = [];
 		for( var i = 1; i <= 31; i ++){
 			var oOption = document.createElement("OPTION");
 			oOption.text = i;
 			oOption.value = i;
 			$('day').add(oOption);
 		}
-		var oOption;
-		oOption = document.createElement("OPTION");
-		oOption.text = '23：00--1：00';
-		oOption.value = "子";
-		$('hour').add(oOption);
-		oOption = document.createElement("OPTION");
-		oOption.text = '1：00--3：00';
-		oOption.value = "丑";
-		$('hour').add(oOption);
-		oOption = document.createElement("OPTION");
-		oOption.text = '3：00--5：00';
-		oOption.value = "寅";
-		$('hour').add(oOption);
-		oOption = document.createElement("OPTION");
-		oOption.text = '5：00--7：00';
-		oOption.value = "卯";
-		$('hour').add(oOption);
-		oOption = document.createElement("OPTION");
-		oOption.text = '7：00--9：00';
-		oOption.value = "辰";
-		$('hour').add(oOption);
-		oOption = document.createElement("OPTION");
-		oOption.text = '9：00--11：00';
-		oOption.value = "巳";
-		$('hour').add(oOption);
-		oOption = document.createElement("OPTION");
-		oOption.text = '11：00--13：00';
-		oOption.value = "午";
-		$('hour').add(oOption);
-		oOption = document.createElement("OPTION");
-		oOption.text = '13：00--15：00';
-		oOption.value = "未";
-		$('hour').add(oOption);
-		oOption = document.createElement("OPTION");
-		oOption.text = '13：00--17：00';
-		oOption.value = "申";
-		$('hour').add(oOption);
-		oOption = document.createElement("OPTION");
-		oOption.text = '13：00--19：00';
-		oOption.value = "酉";
-		$('hour').add(oOption);
-		oOption = document.createElement("OPTION");
-		oOption.text = '13：00--21：00';
-		oOption.value = "戌";
-		$('hour').add(oOption);
-		oOption = document.createElement("OPTION");
-		oOption.text = '13：00--23：00';
-		oOption.value = "亥";
-		$('hour').add(oOption);
-		$('year').value = '1985';
-		$('month').value = '1';
-		$('day').value = '1';
+		for( var i = 0, l = data.arrHours.length; i < l; i ++){
+			var oOption = document.createElement("OPTION");
+			oOption.text = data.arrHours[i].text;
+			oOption.value = data.arrHours[i].value;
+			$('hour').add(oOption);
+		}
+		$('year').value = '1984';
+		$('month').value = '12';
+		$('day').value = '30';
 		$('hour').value = '午';
-	},
-	bind: function(){
+
 		var self = this;
 		$('c').onclick = function(){
 			self.birth = {
@@ -272,11 +263,15 @@ var App = {
 		};
 	},
 	run: function(){
-		this.tran();
-		var y = parseFloat(this.years[this.nongli.year])*10;
-		var m = parseFloat(this.months[this.nongli.month])*10;
-		var d = parseFloat(this.days[this.nongli.day])*10;
-		var h = parseFloat(this.hours[this.birth.hour])*10;
+		if($('type').value == 'a'){
+			this.tran();			
+		} else {
+			this.nongli = this.birth;
+		}
+		var y = parseFloat(data.years[this.nongli.year])*10;
+		var m = parseFloat(data.months[this.nongli.month])*10;
+		var d = parseFloat(data.days[this.nongli.day])*10;
+		var h = parseFloat(data.hours[this.birth.hour])*10;
 		
 		var re = y + m + d + h;
 		var a = Math.floor(re / 10), b = re % 10;
@@ -284,7 +279,7 @@ var App = {
 		if(re > 72 || re < 21){
 			$('result').innerHTML = re;
 		} else {
-			$('result').innerHTML = '<p>农历：' + this.nongli.year + '年' + this.nongli.month + '月' + this.nongli.day + '日' + this.birth.hour + '时</p><p>重：' + a + '两' + b + '钱</p><p>' + this.result[re] + '</p>';
+			$('result').innerHTML = '<p>农历：' + this.nongli.year + '年' + this.nongli.month + '月' + this.nongli.day + '日' + this.birth.hour + '时</p><p>重：' + a + '两' + b + '钱</p><p>' + data.result[re] + '</p>';
 		}
 	},
 	tran: function(){
@@ -364,7 +359,7 @@ var App = {
 			else if (mm > wNongliData[m] / 65536 + 1)
 				mm = mm - 1;
 		}
-		this.nongli = {year: yy, month: mm, day: dd, hour: this.birth.day};
+		this.nongli = {year: yy, month: mm, day: dd, hour: this.birth.hour};
 	}
 };
 
