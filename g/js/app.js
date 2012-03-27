@@ -246,9 +246,9 @@ var App = {
 			oOption.value = data.arrHours[i].value;
 			$('hour').add(oOption);
 		}
-		$('year').value = '1984';
-		$('month').value = '12';
-		$('day').value = '30';
+		$('year').value = '1985';
+		$('month').value = '1';
+		$('day').value = '1';
 		$('hour').value = '午';
 
 		var self = this;
