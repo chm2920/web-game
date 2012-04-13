@@ -3,8 +3,8 @@ var Lobby = require('./lobby');
 var	ws = require("./ws"),
 	cnt = 0;
 	
-var manager = function(){
-	this.transports = {};
+var manager = {
+	transports : {}
 };
 var lobby = new Lobby(manager);
 
