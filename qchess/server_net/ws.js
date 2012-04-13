@@ -13,7 +13,8 @@ exports.createServer = function (websocketListener) {
 		  ,	buffer = ''
 		  , version;
 
-		socket.id = id++;
+		//socket.id = id++;
+		socket.id = Math.abs(Math.random() * Math.random() * Date.now() | 0).toString() + Math.abs(Math.random() * Math.random() * Date.now() | 0).toString();
 		socket.addListener("data", function (data) {
 			if(!version) {
 				version = handshake(this, data); // because of draft76 handshakes
