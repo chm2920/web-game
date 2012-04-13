@@ -1,7 +1,7 @@
 
 var Lobby = {
 	socket: null,
-	server: '72.46.136.201',
+	server: '173.252.248.156',
 	port: 27688,
 	
 	connect: function(){
