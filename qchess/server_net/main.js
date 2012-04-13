@@ -8,8 +8,6 @@ var manager = function(){
 };
 var lobby = new Lobby(manager);
 
-console.log('a');
-
 ws.createServer(function (emitter) {
 	emitter
 		.addListener("connect", function (socketid) { 
