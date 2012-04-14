@@ -15,8 +15,13 @@ ws.createServer(function (emitter) {
 			console.log("Welcome socketid[" + socketid + '] in Conns[' + cnt + ']');
 			manager.transports[socketid] = emitter;
 		})
-		.addListener("data", function (data) { 
-			switch(data.type){
+		.addListener("data", function (d) { 
+			var data = {
+					id: d.socketid,
+					data: JSON.parse(d.data)
+				};
+			console.log(data);
+			switch(data.data.type){
 				case 'req':
 					switch(data.data.action){
 						case 'mine':

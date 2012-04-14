@@ -92,11 +92,12 @@ Lobby.prototype.findUser = function(id){
 }
 
 Lobby.prototype.getUInfo = function(data){
-	var username = data.addr.replace(/\./g, '_') + '_' + (function(){
-			var date = new Date();
-			return date.getHours() + '_' + date.getMinutes() + '_' + Math.round(Math.random() * 1000);
-		})();
-	username = username.replace(/_/g, '');
+	// var username = data.addr.replace(/\./g, '_') + '_' + (function(){
+			// var date = new Date();
+			// return date.getHours() + '_' + date.getMinutes() + '_' + Math.round(Math.random() * 1000);
+		// })();
+	// username = username.replace(/_/g, '');
+	var username = data.id;
 	
 	this.users.push(new User(data.id, username));
 	var response = {};

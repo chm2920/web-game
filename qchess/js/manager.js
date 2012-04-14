@@ -28,7 +28,6 @@ var Manager = {
 		}
 		$('#desk' + data.deskno + ' .' + data.side + ' p').text(username);
 		if(parseInt(data.suc, 10) == 2 && User.deskno == data.deskno){ // two one
-			alert('a');
 			var d;
 			if(username != myUsername){ // not self
 				User.dUsername = username;
