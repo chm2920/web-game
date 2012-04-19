@@ -1,0 +1,42 @@
+
+*{margin:0;padding:0;}
+body{margin:0;padding:0;font-size:12px;color:#000;text-align:center;font-family:SimSun;}
+form,ul,ul li,p,table,tbody,thead,tr{margin:0;padding:0;}
+ul, ul li{list-style:none;}
+a{color:#0092D2;text-decoration:none;}
+a:hover{color:#fc4c0f;text-decoration:underline;}
+img{border:0px;}
+.clearfix:after {content:"."; display:block; height:0; clear:both; visibility:hidden; }
+* html>body .clearfix { display:inline-block; width:100%; }
+* html .clearfix { height:1%; /* End hide from IE-mac */ } 
+/* ie7 hack*/ 
+*+html .clearfix { min-height:1%; } 
+.clearfix{zoom:1;} 
+
+#Container{margin:0 auto;width:320px;height:360px;border:1px solid;}
+.board{display:none;}
+
+#Login{}
+	.logo{padding:40px 0 0 0;font-size:36px;font-weight:bold;}
+	.user-info{margin-top:40px;line-height:30px;font-size:14px;}
+		.user-name{}
+			.user-name span{font-size:24px;font-weight:bold;}
+		.user-new{}
+			.user-new input{padding:10px 0;width:200px;text-align:center;font-size:14px;}
+	.btn-login{margin-top:40px;}
+		.btn-login span{padding:15px 30px;line-height:30px;border:1px solid #CCC;background:#EEE;cursor:pointer;}
+	.change_account{margin-top:35px;}
+
+#Connecting{}
+	#Connecting p{margin-top:160px;text-align:center;font-size:18px;}
+
+#Game{}
+	.competitors{padding:0 30px;height:30px;line-height:30px;font-weight:normal;}
+		.competitors .cur{font-weight:bold;}
+	.left-c{float:left;display:inline;color:#FF0000;}
+	.right-c{float:right;display:inline;color:blue;}
+	.gameboard{}
+		.gameboard table{margin:0 auto;width:270px;border:1px solid #CCC; border-collapse:collapse;}
+		.gameboard table td{height:45px;line-height:30px;border:1px solid #CCC;}
+	.opeartion{margin-top:20px;text-align:center;}
+		.opeartion a{margin:0 10px;padding:6px 20px;border:1px solid #CCC;background:#EEE;display:none;}
