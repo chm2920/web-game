@@ -1,101 +1,44 @@
 <!DOCTYPE >
 <html>
 	<head>
-		<title>QQ Chess Game</title>
-		<link rel="stylesheet" href="style/style.css" />
+		<title>HTML5 Game Demo</title>
+		<link rel="stylesheet" href="style/demo.css" />
 		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
-		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/demo.js"></script>
 	</head>
 	<body>
 		<div id="splider" style="display:none;">test</div>
 		<div id="wapper">
-			<header>
-				<h1>QQ Chess Game</h1>
-				<div id="info" class="info"></div>
-			</header>
-			<article class="clearfix">
-				<div class="main">
-					<ul id="desks" class="desks">
-						<li>
-							<div class="L">
-								<i></i>
-								<p>adsf</p>
-							</div>
-							<span></span>
-							<div class="R">
-								<i></i>
-								<p>adsf</p>
-							</div>
-						</li>
-					</ul>
-					<div id="board" class="board">
-						<ul class="turn">
-							<li>
-								<h4>De</h4>
-								<p id="d_timeout" style="display: none;">29</p>
-							</li>
-							<li>
-								<h4>Me</h4>
-								<p id="timeout" style="display: none;">29</p>
-							</li>
-						</ul>
-						<div class="game" id="game">
-							<table id="gameTB" class="gameTB">
-								<tr>
-									<td></td>
-								</tr>
-							</table>
-						</div>
-						<div class="gameInfo">
-							<div id="selected" class="selected"></div>
-							<ul class="op">
-								<li><button id="doReady">Ready</button></li>
-								<!--li><button id="doLeave">Leave</button></li-->
-								<li><button id="doLost">Lost</button></li>
-								<!--li><button id="doPeace">Peace</button></li-->
-								<li><button id="doRandom">Random</button></li>
-							</ul>
-						</div>
+			<div id="Connectting" class="connectting board">
+				<span>Connectting ...</span>
+			</div>
+			<div id="Login" class="board">
+				<div class="logo">Demo Logo</div>
+				<div class="user_info">
+					<div id="user_name" class="user_name">用户名：<br /><span>Hello</span></div>
+					<div id="user_new" class="user_new" style="display:none;">
+						输入新名称：<br /><input type="text" name="username" id="username" value="" />
 					</div>
 				</div>
-				<div class="side">
-					<div class="uInfo" id="uInfo" style="display:none;">
-						<div id="Me">
-							<ul>
-								<li><label>UserName:</label><i id="username">username</i></li>
-								<li><label>Win:</label><i id="win">1</i></li>
-								<li><label>Lost:</label><i id="lost">1</i></li>
-							</ul>
-							<div id="status" class="status">Ready</div>
-						</div>
-						<p>VS</p>
-						<div id="">
-							<ul>
-								<li><label>UserName:</label><i id="d_username">username</i></li>
-								<li><label>Win:</label><i id="d_win">1</i></li>
-								<li><label>Lost:</label><i id="d_lost">1</i></li>
-							</ul>
-							<div id="d_status" class="status">Ready</div>
-						</div>
-					</div>
-					<div class="users" id="users" style="display:none;">
-						<textarea class="userList" id="userList" readonly="true"></textarea>
-					</div>
-					<div class="debug" id="debug">
-						<textarea class="debugInfo" id="debugInfo" readonly="true"></textarea>
-					</div>
-					<div class="chat">
-						<textarea class="chatList" id="chatList" readonly="true"></textarea>
-						<div class="chatForm">
-							<input type="text" name="txt" id="txt" class="iInput" />
-							<input type="button" name="send" id="send" value="Send" class="btnInput" />
-						</div>
-					</div>
-				</div>
-			</article>
-			<footer>
-				Nxyouxi.com &copy; 2011
-			</footer>
+				<ul id="opeartion" class="opeartion">
+					<li id="game">快速开始</li>
+					<li id="lobby">进入大厅</li>
+				</ul>
+				<div class="create_new"><a id="create_new" href="javascript:void(0)">创建新角色</a></div>
+			</div>
+			<div id="GameBoard" class="board">
+				
+			</div>
+			<div id="GameRule" class="game-rule board">
+				<h2>游戏规则</h2>
+				<ul>
+					<li>1.</li>
+					<li>2.</li>
+				</ul>
+			</div>
+			<div id="Footer">
+				<a id="show_game_rule" href="javascript:void(0)">游戏规则</a>
+			</div>
 		</div>
 	</body>
 </html>
