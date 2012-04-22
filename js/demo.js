@@ -1,68 +1,89 @@
 
 $(document).ready(function(){
-	var t = (function(){
-		
+	var g = (function(){
 		function bind(){
-			$('#create_new').click(function(){
-				$('#create_new').hide();
-				$('#user_name').hide();
-				$('#user_new').show();
+			$('#change_account').click(function(){
+				$('#change_account').hide();
+				$('#user-name').hide();
+				$('#user-new').show();
+				$('#username').focus();
 			});
 			
-			$('#opeartion li').click(function(){
-				switch(this.id){
-					case 'game':
-						game();
-						break;
-					case 'lobby':
-						lobby();
-						break;
-				}
-			});
-			
-			$('#show_game_rule').click(function(){
-				$('#GameRule').show();
-			});
-			$('#GameRule').click(function(){
-				$('#GameRule').hide();
+			$('#btn-login').click(function(){
+				loading();
+				setTimeout(function(){
+					game();
+				}, 600);
 			});
 		}
 		
-		function start(){
+		function init(){
 			reset();
 			$('#Login').show();
 		}
 		
 		function loading(){
 			reset();
-			$('#Connectting').show();
+			$('#Connecting').show();
 		}
 		
 		function game(){
-			loading();
-			setTimeout(function(){
-				$('#GameBoard').show();
-			}, 600);
+			reset();
+			var arrT = [];
+			arrT.push('<table>');
+			for(var i = 0; i < 6; i ++){
+				arrT.push('<tr>');
+				for(var j = 0; j < 6; j ++){
+					arrT.push('<td>' + j + '</td>');
+				}
+				arrT.push('</tr>');
+			}
+			arrT.push('</table>');
+			$('#gameboard').html(arrT.join(''));
+			$('#Game').show();
+			
+			$('#ready').show();
+			$('#logout').show();
+			$('#peace').hide();
+			$('#lost').hide();
+			
+			$('#ready').click(function(event){
+				event.preventDefault();
+				$('#ready').hide();
+				$('#logout').hide();
+				$('#peace').show();
+				$('#lost').show();				
+			});
+			
+			$('#logout').click(function(event){
+				event.preventDefault();
+				loading();
+				setTimeout(function(){
+					init();
+				}, 600);
+			});
+			
+			$('#peace, #lost').click(function(event){
+				event.preventDefault();
+				$('#ready').show();
+				$('#logout').show();
+				$('#peace').hide();
+				$('#lost').hide();
+			});
 		}
 		
-		function lobby(){
-			loading();
-		}
-		
-		function reset(){	
-			$('#Connectting').hide();
+		function reset(){
 			$('#Login').hide();
-			$('#GameBoard').hide();
-			$('#GameRule').hide();		
+			$('#Connecting').hide();
+			$('#Game').hide();
 		}
 		
 		return {
 			init: function(){
 				bind();
-				start();
+				game();
 			}
-		};
+		}
 	})();
-	
-	t.init();
+	g.init();
 });

@@ -2,42 +2,79 @@
 <html>
 	<head>
 		<title>HTML5 Game Demo</title>
+		<meta charset="UTF-8" />
 		<link rel="stylesheet" href="style/demo.css" />
 		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 		<script type="text/javascript" src="js/demo.js"></script>
 	</head>
 	<body>
-		<div id="splider" style="display:none;">test</div>
-		<div id="wapper">
-			<div id="Connectting" class="connectting board">
-				<span>Connectting ...</span>
-			</div>
+		<div id="Container">
 			<div id="Login" class="board">
-				<div class="logo">Demo Logo</div>
-				<div class="user_info">
-					<div id="user_name" class="user_name">用户名：<br /><span>Hello</span></div>
-					<div id="user_new" class="user_new" style="display:none;">
-						输入新名称：<br /><input type="text" name="username" id="username" value="" />
+				<div class="logo">Chess Game</div>
+				<div class="user-info">
+					<div id="user-name" class="user-name">用户名：<br /><span>Hello</span></div>
+					<div id="user-new" class="user-new" style="display:none;">
+						输入用户名：<br /><input type="text" name="username" id="username" />
 					</div>
 				</div>
-				<ul id="opeartion" class="opeartion">
-					<li id="game">快速开始</li>
-					<li id="lobby">进入大厅</li>
-				</ul>
-				<div class="create_new"><a id="create_new" href="javascript:void(0)">创建新角色</a></div>
+				<div id="btn-login" class="btn-login"><span>快速开始</span></div>
+				<div class="change_account"><a href="javascript:void(0)" id="change_account">换新名称</a></div>
 			</div>
-			<div id="GameBoard" class="board">
-				
+			<div id="Connecting" class="board">
+				<p>Connecting ...</p>
 			</div>
-			<div id="GameRule" class="game-rule board">
-				<h2>游戏规则</h2>
-				<ul>
-					<li>1.</li>
-					<li>2.</li>
-				</ul>
-			</div>
-			<div id="Footer">
-				<a id="show_game_rule" href="javascript:void(0)">游戏规则</a>
+			<div id="Game" class="board">
+				<div class="user-bar clearfix">
+					<div class="user-bar-logo">Chess Game</div>
+					<div class="user-bar-info"><span>UserName</span><a href="javascript:void(0);" id="logout">退出</a></div>
+				</div>
+				<div class="panel clearfix">
+					<div class="panel-game">
+						<div class="clearfix">
+							<div class="panel-game-total"><span><i>提示</i></span>当前在线<i>21</i>人</div>
+							<div id="gameboard" class="gameboard">					
+							</div>
+							<div class="game-actions">
+								<div class="competitors clearfix">
+									<div class="c c-d">
+										<p>* 对手</p>
+										<p>时间</p>
+									</div>
+									<div class="c c-self">自己</div>
+								</div>
+								<div id="opeartion" class="game-opeartion">
+									<a href="javascript:void(0);" id="ready">开始</a>
+									<a href="javascript:void(0);" id="peace">求和</a>
+									<a href="javascript:void(0);" id="lost">认输</a>
+								</div>
+							</div>
+						</div>
+						<div class="game-chat">
+							<textarea class="game-chat-box" readonly="readonly"></textarea>
+							<input type="text" name="game-chat-input" id="game-chat-input" class="game-chat-input" />
+							<input type="button" name="game-chat-submit" id="game-chat-submit" class="game-chat-submit" value="发送" />
+						</div>
+					</div>
+					<div class="panel-msgs">
+						<div class="game-list">
+							<ul class="panel-nav clearfix">
+								<li class="cur">游戏列表</li>
+								<li>在线用户</li>
+							</ul>
+							<div id="game-list-con" class="game-list-con list-con">
+								
+							</div>
+						</div>
+						<div class="game-msgs">
+							<ul class="panel-nav clearfix">
+								<li class="cur">系统消息</li>
+							</ul>
+							<div id="game-msgs-con" class="game-msgs-con list-con">
+								
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</body>
