@@ -15,6 +15,21 @@ $(document).ready(function(){
 					game();
 				}, 600);
 			});
+			
+			$('#game-list-ul li').click(function(){
+				$('#game-list-ul li').removeClass('cur');
+				$(this).addClass('cur');
+				switch(this.id){
+					case 'sub-game-list':
+						$('#game-desk-tb').show();
+						$('#game-user-tb').hide();
+						break;
+					case 'sub-user-list':
+						$('#game-desk-tb').hide();
+						$('#game-user-tb').show();
+						break;
+				}
+			});
 		}
 		
 		function init(){

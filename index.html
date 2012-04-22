@@ -57,12 +57,62 @@
 					</div>
 					<div class="panel-msgs">
 						<div class="game-list">
-							<ul class="panel-nav clearfix">
-								<li class="cur">游戏列表</li>
-								<li>在线用户</li>
+							<ul id="game-list-ul" class="panel-nav clearfix">
+								<li id="sub-game-list" class="cur">游戏列表</li>
+								<li id="sub-user-list">在线用户</li>
 							</ul>
-							<div id="game-list-con" class="game-list-con list-con">
-								
+							<div id="game-list-con" class="game-list-con list-con">						
+								<table id="game-desk-tb" class="game-list-tb">
+									<tr>
+										<th>红</th>
+										<th>对</th>
+										<th>蓝</th>
+									</tr>
+									<tr>
+										<td class="a">Chm2920</td>
+										<td class="b">vs</td>
+										<td class="c">abcd</td>
+									</tr>
+									<tr>
+										<td class="a">Chm2920</td>
+										<td class="b">vs</td>
+										<td class="c">abcd</td>
+									</tr>
+									<tr>
+										<td class="a">Chm2920</td>
+										<td class="b">vs</td>
+										<td class="c">abcd</td>
+									</tr>
+									<tr>
+										<td class="a">Chm2920</td>
+										<td class="b">vs</td>
+										<td class="c">abcd</td>
+									</tr>
+									<tr>
+										<td class="a">Chm2920</td>
+										<td class="b">vs</td>
+										<td class="c">abcd</td>
+									</tr>
+									<tr>
+										<td class="a">Chm2920</td>
+										<td class="b">vs</td>
+										<td class="c">abcd</td>
+									</tr>
+								</table>						
+								<table id="game-user-tb" class="game-list-tb" style="display:none;">
+									<tr>
+										<th>用户</th>
+										<th>胜</th>
+										<th>平</th>
+										<th>负</th>
+									</tr>
+									<tr>
+										<td class="a">chm2920</td>
+										<td class="b">0</td>
+										<td class="b">0</td>
+										<td class="b">0</td>
+									</tr>
+								</table>
 							</div>
 						</div>
 						<div class="game-msgs">
@@ -70,7 +120,8 @@
 								<li class="cur">系统消息</li>
 							</ul>
 							<div id="game-msgs-con" class="game-msgs-con list-con">
-								
+								<p>欢迎来到本游戏。</p>
+								<p>您已成功登录。</p>
 							</div>
 						</div>
 					</div>

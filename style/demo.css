@@ -58,9 +58,19 @@ img{border:0px;}
 		.panel-msgs{float:right;display:inline;padding-right:10px;width:370px;}
 			.game-list{}
 			.game-msgs{margin-top:10px;}
-			.list-con{background:#FFF;border-radius:2px;}
+			.list-con{padding:7px 0;overflow-y:scroll;background:#FFF;border-radius:2px;}
 			.panel-nav{height:24px;border-bottom:1px solid #EEE;padding-left:14px;}
 			.panel-nav li{float:left;display:inline;margin:0 7px 0 0px;padding:6px 10px;line-height:11px;height:11px;border:solid 1px #CFD5D9;border-radius:4px 4px 0 0;background:#DDD;cursor:pointer;}
 			.panel-nav li.cur{padding-bottom:7px;background:#FFF;border-bottom:none;}
-			.game-list-con{height:280px;}
-			.game-msgs-con{height:210px;}
+			.game-list-con{height:266px;}
+			.game-list-tb{width:100%;border-collapse:collapse;}
+				.game-list-tb th{font-size:12px;font-weight:bold;border:1px solid #EEE;height:22px;line-height:22px;background:#FAFAFA;color:#666;}
+				.game-list-tb td{height:22px;line-height:22px;font-size:12px;font-weight:normal;border:1px solid #EEE;text-align:center;}
+				.game-list-tb td.a{width:40%;color:#0092D2;}
+				.game-list-tb td.b{width:20%;}
+				.game-list-tb td.c{width:40%;color:#0092D2;}
+				.game-list-tb td.d{}
+			.game-msgs-con{height:196px;padding:7px 18px;}
+				.game-msgs-con p{line-height:20px;color:#666;}
+				
+				
