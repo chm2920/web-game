@@ -5,20 +5,25 @@
 		<meta charset="UTF-8" />
 		<link rel="stylesheet" href="style/demo.css" />
 		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
-		<script type="text/javascript" src="js/demo.js"></script>
+		<script type="text/javascript" src="js/jquery.cookie.min.js"></script>
 	</head>
 	<body>
 		<div id="Container">
 			<div id="Login" class="board">
 				<div class="logo">Chess Game</div>
-				<div class="user-info">
-					<div id="user-name" class="user-name">用户名：<br /><span>Hello</span></div>
-					<div id="user-new" class="user-new" style="display:none;">
-						输入用户名：<br /><input type="text" name="username" id="username" />
-					</div>
+				<div id="not-support" class="not-support" style="display:none;">
+					您的浏览器不支持Websocket，请下载最新 Chrome 或 Firefox 或 Opera。
 				</div>
-				<div id="btn-login" class="btn-login"><span>快速开始</span></div>
-				<div class="change_account"><a href="javascript:void(0)" id="change_account">换新名称</a></div>
+				<div id="init" style="display:none;">
+					<div class="user-info">
+						<div id="user-name" class="user-name" style="display:none;">用户名：<br /><span>Hello</span></div>
+						<div id="user-new" class="user-new" style="display:none;">
+							输入用户名：<br /><input type="text" name="username" id="username" />
+						</div>
+					</div>
+					<div class="btn-login"><span id="btn-login">快速开始</span></div>
+					<div class="change_account"><a href="javascript:void(0)" id="change_account" style="display:none;">换新名称</a></div>
+				</div>
 			</div>
 			<div id="Connecting" class="board">
 				<p>Connecting ...</p>
@@ -30,8 +35,8 @@
 				</div>
 				<div class="panel clearfix">
 					<div class="panel-game">
-						<div class="clearfix">
-							<div class="panel-game-total"><span><i>提示</i></span>当前在线<i>21</i>人</div>
+						<div id="game-main" class="clearfix" style="display:none;">
+							<div class="panel-game-total"><span><i>提示</i></span>当前在线<i id="gameusers-online-num">21</i>人</div>
 							<div id="gameboard" class="gameboard">					
 							</div>
 							<div class="game-actions">
@@ -44,13 +49,13 @@
 								</div>
 								<div id="opeartion" class="game-opeartion">
 									<a href="javascript:void(0);" id="ready">开始</a>
-									<a href="javascript:void(0);" id="peace">求和</a>
+									<a href="javascript:void(0);" id="draw">求和</a>
 									<a href="javascript:void(0);" id="lost">认输</a>
 								</div>
 							</div>
 						</div>
-						<div class="game-chat">
-							<textarea class="game-chat-box" readonly="readonly"></textarea>
+						<div id="game-chat" class="game-chat" style="display:none;">
+							<textarea id="game-chat-box" class="game-chat-box" readonly="readonly"></textarea>
 							<input type="text" name="game-chat-input" id="game-chat-input" class="game-chat-input" />
 							<input type="button" name="game-chat-submit" id="game-chat-submit" class="game-chat-submit" value="发送" />
 						</div>
@@ -63,55 +68,38 @@
 							</ul>
 							<div id="game-list-con" class="game-list-con list-con">						
 								<table id="game-desk-tb" class="game-list-tb">
-									<tr>
-										<th>红</th>
-										<th>对</th>
-										<th>蓝</th>
-									</tr>
-									<tr>
-										<td class="a">Chm2920</td>
-										<td class="b">vs</td>
-										<td class="c">abcd</td>
-									</tr>
-									<tr>
-										<td class="a">Chm2920</td>
-										<td class="b">vs</td>
-										<td class="c">abcd</td>
-									</tr>
-									<tr>
-										<td class="a">Chm2920</td>
-										<td class="b">vs</td>
-										<td class="c">abcd</td>
-									</tr>
-									<tr>
-										<td class="a">Chm2920</td>
-										<td class="b">vs</td>
-										<td class="c">abcd</td>
-									</tr>
-									<tr>
-										<td class="a">Chm2920</td>
-										<td class="b">vs</td>
-										<td class="c">abcd</td>
-									</tr>
-									<tr>
-										<td class="a">Chm2920</td>
-										<td class="b">vs</td>
-										<td class="c">abcd</td>
-									</tr>
+									<thead>
+										<tr>
+											<th>红</th>
+											<th>对</th>
+											<th>蓝</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td class="a">Chm2920</td>
+											<td class="b">vs</td>
+											<td class="c">abcd</td>
+										</tr>
+									</tbody>
 								</table>						
 								<table id="game-user-tb" class="game-list-tb" style="display:none;">
-									<tr>
-										<th>用户</th>
-										<th>胜</th>
-										<th>平</th>
-										<th>负</th>
-									</tr>
-									<tr>
-										<td class="a">chm2920</td>
-										<td class="b">0</td>
-										<td class="b">0</td>
-										<td class="b">0</td>
-									</tr>
+									<thead>
+										<tr>
+											<th>用户</th>
+											<th>胜</th>
+											<th>平</th>
+											<th>负</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td class="a">chm2920</td>
+											<td class="b">0</td>
+											<td class="b">0</td>
+											<td class="b">0</td>
+										</tr>
+									</tbody>
 								</table>
 							</div>
 						</div>
@@ -128,5 +116,6 @@
 				</div>
 			</div>
 		</div>
+		<script type="text/javascript" src="js/demo.js"></script>
 	</body>
 </html>
