@@ -16,7 +16,7 @@ function Lobby(){
 	
 	this.timer = null;
 	
-	//this.heartBeat();
+	this.heartBeat();
 }
 
 var log = function(msg){
@@ -25,40 +25,43 @@ var log = function(msg){
 }
 	
 Lobby.prototype.sendMsg = function(id, msg){
-	var transport = this.manager[id];
 	msg = JSON.stringify(msg);
 	try{
-		transport.write(msg);
+		this.manager[id].write(msg);
 	} catch(e) {
 		console.log('error: ', msg);
 	}
 }
 
 Lobby.prototype.heartBeat = function(){
-	var self = this;
+	var self = this;		
 	setInterval(function(){
 			var response = {};
-			response['type'] = 'msg';
-			response['action'] = 'users';
-			var hsh = {};
-			self.users.forEach(function(user){
-				hsh[user.username] = [user.win, user.lost, user.deskno, user.side];
+			response['type'] = 'desks-users';
+			var hsh = {
+				'desks': {},
+				'users': {}
+			};
+			self.users.forEach(function(u){
+				hsh['users'][u.id] = {
+					sn: u.username,
+					w: u.win,
+					d: u.draw,
+					l: u.lost, 
+					n: u.deskno, 
+					s: u.side
+				};
+			});
+			self.desks.forEach(function(desk){
+				hsh['desks'][desk.no] = {
+					L: hsh['users'][desk.L].sn, 
+					R: hsh['users'][desk.R].sn, 
+					s: desk.status
+				};
 			});
 			response['data'] = hsh;
 			self.broadcast(response);
 		}, 1000);
-		
-	setInterval(function(){
-			var response = {};
-			response['type'] = 'msg';
-			response['action'] = 'desks';
-			var hsh = {};
-			self.desks.forEach(function(desk){
-				hsh[desk.no] = [desk.L, desk.R, desk.status];
-			});
-			response['data'] = hsh;
-			self.broadcast(response);
-		}, 3000);
 }
 
 Lobby.prototype.except = function(id, msg){
@@ -73,7 +76,11 @@ Lobby.prototype.except = function(id, msg){
 Lobby.prototype.broadcast = function(msg){
 	msg = JSON.stringify(msg);
 	for(var t in this.manager){
-		this.manager[t].write(msg);
+		try{
+			this.manager[t].write(msg);
+		} catch(e){
+			// delete users[t]
+		}
 	}
 }
 
@@ -90,12 +97,38 @@ Lobby.prototype.findUser = function(id){
 //actions 
 
 Lobby.prototype.userLogin = function(data){
-	this.users.push(new User(data.id, data.data.data));
+	var u = new User(data.id, data.data.data);
+	this.users.push(u);
 	var response = {};
 	response['type'] = 'msg';
-	response['action'] = 'tip';
-	response['data'] = username + ' join in ';
+	response['data'] = data.data.data + ' join in ';
 	this.except(data.id, response);
+	response = {};
+	response['type'] = 'assigning';
+	response['data'] = this.users.length;
+	this.sendMsg(data.id, response);
+	this.assign(u);
+}
+
+Lobby.prototype.assign = function(u){
+	for(var i = 0, l = this.users.length; i < l; i ++){
+		if(this.users[i].status == 'waiting' && this.users[i].id != u.id){
+			this.users[i].status = 'pending';
+			u.status = 'pending';
+			var desk = new Desk(this.manager, Math.abs(Math.random() * Math.random() * Date.now() | 0).toString() + Math.abs(Math.random() * Math.random() * Date.now() | 0).toString());
+			this.desks.push(desk);
+			desk.L = this.users[i].id;
+			desk.R = u.id;
+			response = {};
+			response['type'] = 'sitdown';
+			response['data'] = {
+				'L': this.users[i].username,
+				'R': u.username
+			};
+			desk.broadcast(response);
+			break;
+		}
+	}	
 }
 
 Lobby.prototype.leaveDesk = function(user){
@@ -129,52 +162,6 @@ Lobby.prototype.logout = function(id){
 		'username': u.username,
 		'deskno': u.deskno,
 		'side': u.side
-	};
-	this.broadcast(response);
-}
-
-Lobby.prototype.sit = function(id, deskno, side){
-	var response = {};
-	response['type'] = 'msg';
-	response['action'] = 'sit';
-	var user = this.findUser(id);
-	var desk = this.desks[deskno-1];
-	if(desk.status > 2 || desk[side] != null){		
-		response['data'] = {
-			'suc': '-1'
-		};
-		this.sendMsg(id, response);
-	} else {
-		this.leaveDesk(user);
-		user.deskno = deskno;
-		user.side = side;
-		desk[side] = user;
-		desk.status += 1;
-		desk.connections[side] = id;
-		response['data'] = {
-			'username': user.username,
-			'deskno': deskno,
-			'side': side,
-			'suc': desk.status
-		};
-		this.broadcast(response);
-	}
-}
-
-Lobby.prototype.getup = function(id){
-	var u = this.findUser(id);
-	this.leaveDesk(u);
-	u.deskno = 0;
-	u.side = '';
-	u.status = '';
-	var response = {};
-	response['type'] = 'msg';
-	response['action'] = 'getup';
-	response['data'] = {
-		'username': u.username,
-		'deskno': u.deskno,
-		'side': u.side,
-		'suc': '1'
 	};
 	this.broadcast(response);
 }

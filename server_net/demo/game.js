@@ -2,7 +2,7 @@
 
 exports = module.exports = Game;
 
-var P = require('../game/p');
+var P = require('../demo/p');
 
 function Game(desk){
 	this.ps = [];

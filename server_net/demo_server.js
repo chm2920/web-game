@@ -29,8 +29,8 @@ ws.createServer(function (socket) {
 		})
 		.addListener("data", function (data) { 
 			var get = {
-					id: d.socketid,
-					data: JSON.parse(d.data)
+					id: data.socketid,
+					data: JSON.parse(data.data)
 				};
 			console.log(get);
 			switch(get.data.action){

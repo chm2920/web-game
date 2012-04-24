@@ -8,7 +8,7 @@ exports = module.exports = Desk;
 // 5: over
 
 // connections 
-// {'L': conn, 'R': conn}
+// {'L': userid, 'R': userid}
 
 function Desk(manager, no){
 	this.manager = manager;
@@ -16,26 +16,19 @@ function Desk(manager, no){
 	this.L = null;
 	this.R = null;
 	this.status = 0;
-	this.connections = {};
 	
 	this.game = null;
 }
 
-Desk.find = function(no){
-	return desks[no-1];
-}
-
 Desk.prototype.broadcast = function(data){
 	data = JSON.stringify(data);
-	var transport = this.manager.transports[this.connections['L']];
 	try{
-		transport.write(data);
+		this.manager[this.L].write(data);
 	} catch(e) {
 		console.log('error L: ', data);
 	}
-	transport = this.manager.transports[this.connections['R']];
 	try{
-		transport.write(data);
+		this.manager[this.R].write(data);
 	} catch(e) {
 		console.log('error R: ', data);
 	}

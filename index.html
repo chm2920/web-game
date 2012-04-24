@@ -26,26 +26,26 @@
 				</div>
 			</div>
 			<div id="Connecting" class="board">
-				<p>Connecting ...</p>
+				<p>正在连接服务器 ...</p>
 			</div>
 			<div id="Game" class="board">
 				<div class="user-bar clearfix">
 					<div class="user-bar-logo">Chess Game</div>
-					<div class="user-bar-info"><span>UserName</span><a href="javascript:void(0);" id="logout">退出</a></div>
+					<div class="user-bar-info"><span id="user-bar-username">UserName</span><a href="javascript:void(0);" id="logout">退出</a></div>
 				</div>
 				<div class="panel clearfix">
 					<div class="panel-game">
 						<div id="game-main" class="clearfix" style="display:none;">
-							<div class="panel-game-total"><span><i>提示</i></span>当前在线<i id="gameusers-online-num">21</i>人</div>
+							<div class="panel-game-total"><span><i id="game-notice" style="display:none;">提示</i></span>当前在线<i id="gameusers-online-num">21</i>人</div>
 							<div id="gameboard" class="gameboard">					
 							</div>
 							<div class="game-actions">
 								<div class="competitors clearfix">
 									<div class="c c-d">
-										<p>* 对手</p>
+										<p id="game-rival-name">* 对手</p>
 										<p>时间</p>
 									</div>
-									<div class="c c-self">自己</div>
+									<div id="game-self-name" class="c c-self">自己</div>
 								</div>
 								<div id="opeartion" class="game-opeartion">
 									<a href="javascript:void(0);" id="ready">开始</a>

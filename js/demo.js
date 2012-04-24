@@ -17,23 +17,63 @@ var controller = (function(){
 					'data': $.cookie('username')
 				};
 				sendMsg(data);
-				g.onConnected();
+				g.on('connected');
 			}
 			socket.onclose = function(e) {
-				g.onClosed();
+				g.on('closed');
 			}
 			socket.onmessage = function(e) {
 				var data = JSON.parse(e.data);
 				switch(data.type){
-					
+					case 'desks-users':
+						g.on('desks-users', data.data);
+						break;
+					case 'msg':
+						g.on('msg', data.data);
+						break;
+					case 'assigning':
+						g.on('assigning', data.data);
+						break;
+					case 'sitdown':
+						g.on('sitdown', data.data);
+						break;
 				}
+			}
+		},
+		
+		op: function(type, msg){
+			switch(type){
+				case 'chat':
+					sendMsg(msg);
+					break;
 			}
 		}
 	}
 })();
 
 var g = (function(){
-	function bind(){
+	
+	function init(){
+		reset();
+		$('#Login').show();
+		if(window.WebSocket){
+			$('#init').show();
+		} else {
+			$('#not-support').show();
+			return;
+		}
+		if($.cookie('username')){
+			$('#change_account').show();
+			$('#user-name').show();
+			$('#user-name').find('span').html($.cookie('username'));
+			$('#user-new').hide();
+		} else {
+			$('#change_account').hide();
+			$('#user-name').hide();
+			$('#user-new').show();
+			$('#username').focus();				
+		}
+		
 		$('#change_account').click(function(){
 			$.cookie('username', '');
 			$('#change_account').hide();
@@ -43,7 +83,11 @@ var g = (function(){
 		});
 		
 		$('#btn-login').click(function(){
-			login();
+			if(!$.cookie('username')){
+				$.cookie('username', $('#username').val());
+			}
+			loading();
+			controller.connect();
 		});
 		
 		$('#game-list-ul li').click(function(){
@@ -62,37 +106,53 @@ var g = (function(){
 		});
 	}
 	
-	function init(){
-		bind();
+	function loading(){
 		reset();
-		$('#Login').show();
-		if(window.WebSocket){
-			$('#init').show();
-		} else {
-			$('#not-support').show();
-		}
-		if($.cookie('username')){
-			$('#change_account').show();
-			$('#user-name').show();
-			$('#user-name').find('span').html($.cookie('username'));
-			$('#user-new').hide();
-		} else {
-			$('#change_account').hide();
-			$('#user-name').hide();
-			$('#user-new').show();
-			$('#username').focus();				
-		}
+		$('#Connecting').html('<p>正在连接服务器 ...</p>').show();
 	}
 	
-	function login(){	
-		if(!$.cookie('username')){
-			$.cookie('username', $('#username').val());
-		}
-		loading();
-		controller.connect();
+	function reset(){
+		$('#Login').hide();
+		$('#Connecting').hide();
+		$('#Game').hide();
 	}
 	
-	function game(){
+	function appendSysMsg(data){
+		$('#game-msgs-con').append('<p>' + data + '</p>');
+	}
+		
+	function appendChatMsg(data){
+		$('#game-chat-box').val($('#game-chat-box').val() + '\n' + data);
+	}
+		
+	function setDesksUsersList(data){
+		var arrT = [], i = 0;
+		for(var t in data['desks']){
+			arrT.push('<tr>');
+			arrT.push('	<td class="a">' + data['desks'][t].L + '</td>');
+			arrT.push('	<td class="b">vs</td>');
+			arrT.push('	<td class="c">' + data['desks'][t].R + '</td>');
+			arrT.push('</tr>');
+		}
+		$('#game-desk-tb tbody').empty().html(arrT.join(''));
+		arrT = [];
+		for(var t in data['users']){
+			arrT.push('<tr>');
+			arrT.push('	<td class="a">' + data['users'][t].sn + '</td>');
+			arrT.push('	<td class="b">' + data['users'][t].w + '</td>');
+			arrT.push('	<td class="b">' + data['users'][t].d + '</td>');
+			arrT.push('	<td class="b">' + data['users'][t].l + '</td>');
+			arrT.push('</tr>');
+			i ++;
+		}
+		$('#game-user-tb tbody').empty().html(arrT.join(''));
+		$('#gameusers-online-num').html(i);
+	}
+	
+	function initGameBoard(data){
+		$('#game-main').show();
+		$('#game-chat').show();
+		
 		var arrT = [];
 		arrT.push('<table>');
 		for(var i = 0; i < 6; i ++){
@@ -105,15 +165,17 @@ var g = (function(){
 		arrT.push('</table>');
 		$('#gameboard').html(arrT.join(''));
 		
-		$('#ready').click(function(event){
+		$('#game-rival-name').html(data.L);
+		$('#game-self-name').html(data.R);		
+		
+		$('#ready').unbind().click(function(event){
 			event.preventDefault();
 			$('#ready').hide();
-			$('#logout').hide();
 			$('#peace').show();
 			$('#lost').show();				
 		});
 		
-		$('#logout').click(function(event){
+		$('#logout').unbind().click(function(event){
 			event.preventDefault();
 			loading();
 			setTimeout(function(){
@@ -121,80 +183,69 @@ var g = (function(){
 			}, 600);
 		});
 		
-		$('#draw, #lost').click(function(event){
+		$('#draw, #lost').unbind().click(function(event){
 			event.preventDefault();
 			$('#ready').show();
 			$('#draw').hide();
 			$('#lost').hide();
 		});
-	}
-	
-	function loading(){
-		reset();
-		$('#Connecting').show();
-	}
-	
-	function reset(){
-		$('#Login').hide();
-		$('#Connecting').hide();
-		$('#Game').hide();
-	}
-	
-	function appendSysMsg(data){
-		$('#game-msgs-con').append('<p>' + data + '</p>');
-	}
-	
-	function appendChatMsg(data){
-		$('#game-chat-box').val($('#game-chat-box').val() + '\n' + data);
+		
+		$('#game-chat-input').unbind().keyup(function(event){
+			if(true){
+				controller.op();
+			}
+		});
+		
+		$('#game-chat-submit').unbind().click(function(event){
+			if(true){
+				controller.op();
+			}
+		});
 	}
 	
 	return {
 		init: function(){
 			init();
 		},
-
-		onConnected: function(){
-			reset();
-			$('#Game').show();			
-			$('#ready').show();
-			$('#draw').hide();
-			$('#lost').hide();
-						
-			$('#game-desk-tb tbody').empty();
-			$('#game-user-tb tbody').empty();
-			
-			$('#game-msgs-con').empty()
-			appendSysMsg('您已成功登录。');
-		},
 		
-		onClosed: function(){
-			reset();
-			$('#Connecting').html('<p>连接服务器失败</p>').show();
-		},
-		
-		setDeskList: function(data){
-			var arrT = [];
-			arrT.push('<tr>');
-			arrT.push('	<td class="a">Chm2920</td>');
-			arrT.push('	<td class="b">vs</td>');
-			arrT.push('	<td class="c">abcd</td>');
-			arrT.push('</tr>');
-			$('#game-desk-tb tbody').html(arrT.join(''));
-		},
-		
-		setUserList: function(data){
-			var arrT = [];
-			arrT.push('<tr>');
-			arrT.push('	<td class="a">chm2920</td>');
-			arrT.push('	<td class="b">0</td>');
-			arrT.push('	<td class="b">0</td>');
-			arrT.push('	<td class="b">0</td>');
-			arrT.push('</tr>');
-			$('#game-user-tb tbody').html(arrT.join(''));
-		},
-		
-		gameStart: function(data){
-			$('#gameusers-online-num').html(data.total);
+		on: function(status, data){
+			switch(status){
+				case 'msg':
+					appendSysMsg(data);
+					break;
+				case 'closed':
+					reset();
+					$('#Connecting').html('<p>连接服务器失败</p>').show();
+					break;
+				case 'connected':
+					reset();
+					$('#Connecting').html('<p>已连接服务器 ...</p>').show();
+					break;
+				case 'assigning':
+					reset();
+					$('#Connecting').html('<p>正在配桌 ...' + data + '</p>').show();
+					break;
+				case 'desks-users':
+					setDesksUsersList(data);
+					break;
+				case 'sitdown':
+					reset();
+					$('#Game').show();			
+					$('#ready').show();
+					$('#draw').hide();
+					$('#lost').hide();
+					
+					$('#user-bar-username').html($.cookie('username'));
+								
+					$('#game-desk-tb tbody').empty();
+					$('#game-user-tb tbody').empty();
+					
+					$('#game-msgs-con').empty()
+					appendSysMsg('您已成功登录。');
+					appendSysMsg('新对决: ' + data.L + ' vs ' + data.R);
+					initGameBoard(data);
+					break;
+			}
 		}
 	}
 })();
