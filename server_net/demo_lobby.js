@@ -3,34 +3,29 @@
 exports = module.exports = Lobby;
 
 
-var User = require('./game/user')
-	, Desk = require('./game/desk')
-	, Game = require('./game/game');
+var User = require('./demo/user')
+	, Desk = require('./demo/desk')
+	, Game = require('./demo/game');
 
 	
-function Lobby(manager){
-	this.manager = manager;
+function Lobby(){
+	this.manager = {};
 	
 	this.users = [];
 	this.desks = [];
 	
 	this.timer = null;
 	
-	for(var i = 0; i < 15; i ++){
-		this.desks.push(new Desk(manager, i + 1));
-	}
-	
-	this.heartBeat();
+	//this.heartBeat();
 }
 
 var log = function(msg){
 	console.log('=================');
 	console.log(msg);
-	// console.log('\n');
 }
 	
 Lobby.prototype.sendMsg = function(id, msg){
-	var transport = this.manager.transports[id];
+	var transport = this.manager[id];
 	msg = JSON.stringify(msg);
 	try{
 		transport.write(msg);
@@ -67,18 +62,18 @@ Lobby.prototype.heartBeat = function(){
 }
 
 Lobby.prototype.except = function(id, msg){
-	for(var t in this.manager.transports){
+	for(var t in this.manager){
 		if(t != id){
 			msg = JSON.stringify(msg);
-			this.manager.transports[t].write(msg);
+			this.manager[t].write(msg);
 		}
 	}
 }
 
 Lobby.prototype.broadcast = function(msg){
 	msg = JSON.stringify(msg);
-	for(var t in this.manager.transports){
-		this.manager.transports[t].write(msg);
+	for(var t in this.manager){
+		this.manager[t].write(msg);
 	}
 }
 
@@ -91,28 +86,16 @@ Lobby.prototype.findUser = function(id){
 	return null;
 }
 
-Lobby.prototype.getUInfo = function(data){
-	// var username = data.addr.replace(/\./g, '_') + '_' + (function(){
-			// var date = new Date();
-			// return date.getHours() + '_' + date.getMinutes() + '_' + Math.round(Math.random() * 1000);
-		// })();
-	// username = username.replace(/_/g, '');
-	var username = data.id;
-	
-	this.users.push(new User(data.id, username));
+
+//actions 
+
+Lobby.prototype.userLogin = function(data){
+	this.users.push(new User(data.id, data.data.data));
 	var response = {};
 	response['type'] = 'msg';
 	response['action'] = 'tip';
 	response['data'] = username + ' join in ';
 	this.except(data.id, response);
-	console.log('connect: ', data.addr);
-	response = {};
-	response['type'] = 'msg';
-	response['action'] = 'mine';
-	response['data'] = {
-		'username': username
-	};
-	this.sendMsg(data.id, response);
 }
 
 Lobby.prototype.leaveDesk = function(user){

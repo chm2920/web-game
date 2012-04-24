@@ -13,7 +13,6 @@ var controller = (function(){
 			socket = new WebSocket('ws://' + server + ':' + port + '/test', 'nxyouxi-protocol');
 			socket.onopen = function(e) {
 				var data = {
-					'type': 'req',
 					'action': 'login',
 					'data': $.cookie('username')
 				};
