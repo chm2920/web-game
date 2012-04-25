@@ -42,9 +42,20 @@ var controller = (function(){
 		},
 		
 		op: function(type, msg){
+			var data = {};
 			switch(type){
 				case 'chat':
-					sendMsg(msg);
+					data = {
+						'action': 'chat',
+						'data': msg
+					};
+					sendMsg(data);
+					break;
+				case 'ready':
+					data = {
+						'action': 'ready'
+					};
+					sendMsg(data);
 					break;
 			}
 		}
@@ -190,15 +201,15 @@ var g = (function(){
 			$('#lost').hide();
 		});
 		
-		$('#game-chat-input').unbind().keyup(function(event){
-			if(true){
-				controller.op();
+		$('#game-chat-input').unbind().keydown(function(event){
+			if(event.keyCode == 13){
+				controller.op('chat', $(this).val());
 			}
 		});
 		
 		$('#game-chat-submit').unbind().click(function(event){
-			if(true){
-				controller.op();
+			if(event.keyCode == 13){
+				controller.op('chat', $('#game-chat-input').val());
 			}
 		});
 	}

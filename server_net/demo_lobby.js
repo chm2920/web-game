@@ -93,19 +93,30 @@ Lobby.prototype.findUser = function(id){
 	return null;
 }
 
+Lobby.prototype.findDesk = function(no){
+	for(var i = 0, l = this.desks.length; i < l; i ++){
+		if(this.desks[i].no == no){
+			return this.desks[i];
+		}
+	}
+	return null;
+}
+
 
 //actions 
 
 Lobby.prototype.userLogin = function(data){
 	var u = new User(data.id, data.data.data);
 	this.users.push(u);
-	var response = {};
-	response['type'] = 'msg';
-	response['data'] = data.data.data + ' join in ';
+	var response = {
+		'type': 'msg',
+		'data': data.data.data + ' join in '
+	};
 	this.except(data.id, response);
-	response = {};
-	response['type'] = 'assigning';
-	response['data'] = this.users.length;
+	response = {
+		'type': 'assigning',
+		'data': this.users.length
+	};
 	this.sendMsg(data.id, response);
 	this.assign(u);
 }
@@ -113,12 +124,14 @@ Lobby.prototype.userLogin = function(data){
 Lobby.prototype.assign = function(u){
 	for(var i = 0, l = this.users.length; i < l; i ++){
 		if(this.users[i].status == 'waiting' && this.users[i].id != u.id){
-			this.users[i].status = 'pending';
-			u.status = 'pending';
 			var desk = new Desk(this.manager, Math.abs(Math.random() * Math.random() * Date.now() | 0).toString() + Math.abs(Math.random() * Math.random() * Date.now() | 0).toString());
 			this.desks.push(desk);
 			desk.L = this.users[i].id;
 			desk.R = u.id;
+			this.users[i].status = 'pending';
+			this.users[i].deskno = desk.no;
+			u.status = 'pending';
+			u.deskno = desk.no;
 			response = {};
 			response['type'] = 'sitdown';
 			response['data'] = {
@@ -164,6 +177,18 @@ Lobby.prototype.logout = function(id){
 		'side': u.side
 	};
 	this.broadcast(response);
+}
+
+Lobby.prototype.chat = function(data){
+	var u = this.findUser(data.id),
+		desk = this.findDesk(u.deskno);
+	if(desk){
+		var response = {
+			'type': 'chat',
+			'data': data.data
+		};
+		desk.broadcast(response);
+	}
 }
 
 Lobby.prototype.ready = function(id){

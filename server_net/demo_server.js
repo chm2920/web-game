@@ -37,14 +37,17 @@ ws.createServer(function (socket) {
 				case 'login':
 					lobby.userLogin(get);								
 					break;
+				case 'chat':
+					lobby.chat(get);
+					break;
+				case 'ready':
+					lobby.ready(get.id);
+					break;
 				case 'sit':
 					lobby.sit(data.id, data.data.data.deskno, data.data.data.side);
 					break;
 				case 'getup':
 					lobby.getup(data.id);
-					break;
-				case 'ready':
-					lobby.ready(data.id);
 					break;
 				case 'game':
 					lobby.game(data.id);
