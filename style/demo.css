@@ -41,7 +41,8 @@ img{border:0px;}
 		.panel-game{float:left;display:inline;width:610px;background:#FFF;}
 			.panel-game-total{padding-left:20px;height:24px;line-height:24px;text-align:left;background:#EEE;}
 				.panel-game-total span{float:right;display:inline;padding-right:20px;color:#FF0000;}
-					.panel-game-total i{font-weight:bold;padding:0 4px;}
+					.panel-game-total i{font-weight:bold;font-style:normal;padding:0 4px;}
+			.game-waitting{padding:60px 0 0 0;text-align:center;}
 			.gameboard{float:left;display:inline;margin:30px 0 0 20px;}
 				.gameboard table{margin:0 auto;width:372px;border:1px solid #CCC; border-collapse:collapse;}
 				.gameboard table td{height:62px;line-height:30px;text-align:center;border:1px solid #CCC;}

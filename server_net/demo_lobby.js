@@ -115,7 +115,7 @@ Lobby.prototype.userLogin = function(data){
 	this.except(data.id, response);
 	response = {
 		'type': 'assigning',
-		'data': this.users.length
+		'data': u.id
 	};
 	this.sendMsg(data.id, response);
 	this.assign(u);
@@ -130,38 +130,21 @@ Lobby.prototype.assign = function(u){
 			desk.R = u.id;
 			this.users[i].status = 'pending';
 			this.users[i].deskno = desk.no;
+			this.users[i].side = 'L'
 			u.status = 'pending';
 			u.deskno = desk.no;
-			response = {};
-			response['type'] = 'sitdown';
-			response['data'] = {
-				'L': this.users[i].username,
-				'R': u.username
+			u.side = 'R'
+			var response = {
+				'type': 'sitdown',
+				'data': {
+					'L': this.users[i].username,
+					'R': u.username
+				}
 			};
 			desk.broadcast(response);
 			break;
 		}
 	}	
-}
-
-Lobby.prototype.leaveDesk = function(user){
-	if(user.deskno != 0){
-		var desk = this.desks[user.deskno-1];
-		var otherSide;
-		desk[user.side] = null;
-		if(user.side == 'L'){
-			otherSide = 'R';
-		} else {
-			otherSide = 'L';
-		}
-		if(desk[otherSide] != ''){
-			desk.status = 1;
-		} else {
-			desk.status = 0;
-		}
-		desk.connections[user.side] = '';
-		desk.game && desk.game.inter && clearInterval(desk.game.inter);
-	}
 }
 
 Lobby.prototype.logout = function(id){
@@ -185,41 +168,40 @@ Lobby.prototype.chat = function(data){
 	if(desk){
 		var response = {
 			'type': 'chat',
-			'data': data.data
+			'data': {
+				'username': u.username,				
+				'msg': data.data
+			}
 		};
 		desk.broadcast(response);
 	}
 }
 
 Lobby.prototype.ready = function(id){
-	var u = this.findUser(id);
-	var desk = this.desks[u.deskno-1];
-	var otherSide = (u.side == 'L'? 'R' : 'L');
-	var d = desk[otherSide];
-	var response = {};
-	if(d){
-		if(d.status == 'ready'){
+	var u = this.findUser(id),
+		desk = this.findDesk(u.deskno),
+		otherSide = (u.side == 'L'? 'R' : 'L'),
+		rival = this.findUser(desk[otherSide]),
+		response = {};
+		
+	if(rival){
+		if(rival.status == 'ready'){
 			u.status = 'game';
-			d.status = 'game';
+			rival.status = 'game';
 			desk.game = new Game(desk);
-			desk.game.init();			
-			response['type'] = 'msg';
-			response['action'] = 'game';
-			response['data'] = desk.game.ps;
+			desk.game.init();
+			response = {
+				'type': 'game',
+				'data': desk.game.ps
+			}
 		} else {
 			u.status = 'ready';
-			response['type'] = 'msg';
-			response['action'] = 'ready';
-			response['data'] = {
-				'username': u.username
-			};
+			response = {
+				'type': 'ready',
+				'data': u.id
+			}
 		}	
 		desk.broadcast(response);
-	} else {
-		u.status = 'ready';
-		response['type'] = 'msg';
-		response['action'] = 'ready';
-		this.sendMsg(id, response);
 	}
 }
 

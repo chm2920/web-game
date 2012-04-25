@@ -75,12 +75,12 @@ Game.prototype.run = function(){
 			return;
 		}
 		seconds -= 1;
-		var response = {};
-		response['type'] = 'msg';
-		response['action'] = 'turn';
-		response['data'] = {
-			'side': self.turn,
-			'seconds': seconds
+		var response = {
+			'type': 'turn',
+			'data': {
+				'side': self.turn,
+				'seconds': seconds
+			}
 		};
 		self.desk.broadcast(response);
 	}, 1000);

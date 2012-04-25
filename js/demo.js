@@ -24,6 +24,7 @@ var controller = (function(){
 			}
 			socket.onmessage = function(e) {
 				var data = JSON.parse(e.data);
+				//g.on(data.type, data.data);
 				switch(data.type){
 					case 'desks-users':
 						g.on('desks-users', data.data);
@@ -37,6 +38,15 @@ var controller = (function(){
 					case 'sitdown':
 						g.on('sitdown', data.data);
 						break;
+					case 'chat':
+						g.on('chat', data.data);
+						break;
+					case 'ready':
+						g.on('ready', data.data);
+						break;
+					case 'game':
+						g.on('game', data.data);
+						break;
 				}
 			}
 		},
@@ -44,6 +54,9 @@ var controller = (function(){
 		op: function(type, msg){
 			var data = {};
 			switch(type){
+				case 'logout':
+					//socket.close();
+					break;
 				case 'chat':
 					data = {
 						'action': 'chat',
@@ -63,6 +76,8 @@ var controller = (function(){
 })();
 
 var g = (function(){
+	
+	this.userid = '';
 	
 	function init(){
 		reset();
@@ -115,6 +130,17 @@ var g = (function(){
 					break;
 			}
 		});
+		
+		$('#logout').click(function(event){
+			event.preventDefault();
+			controller.op('logout');
+			reset();
+			$('#Login').show();
+			$('#change_account').show();
+			$('#user-name').show();
+			$('#user-name').find('span').html($.cookie('username'));
+			$('#user-new').hide();
+		});
 	}
 	
 	function loading(){
@@ -160,9 +186,14 @@ var g = (function(){
 		$('#gameusers-online-num').html(i);
 	}
 	
-	function initGameBoard(data){
+	function initGameBoard(data){	
+		$('#game-waitting').hide();
 		$('#game-main').show();
 		$('#game-chat').show();
+		
+		$('#ready').show();
+		$('#draw').hide();
+		$('#lost').hide();	
 		
 		var arrT = [];
 		arrT.push('<table>');
@@ -177,21 +208,13 @@ var g = (function(){
 		$('#gameboard').html(arrT.join(''));
 		
 		$('#game-rival-name').html(data.L);
-		$('#game-self-name').html(data.R);		
+		$('#game-rival-state').empty();
+		$('#game-self-name').html(data.R);
+		$('#game-self-state').empty();		
 		
 		$('#ready').unbind().click(function(event){
-			event.preventDefault();
-			$('#ready').hide();
-			$('#peace').show();
-			$('#lost').show();				
-		});
-		
-		$('#logout').unbind().click(function(event){
-			event.preventDefault();
-			loading();
-			setTimeout(function(){
-				init();
-			}, 600);
+			event.preventDefault();		
+			controller.op('ready');	
 		});
 		
 		$('#draw, #lost').unbind().click(function(event){
@@ -231,30 +254,41 @@ var g = (function(){
 				case 'connected':
 					reset();
 					$('#Connecting').html('<p>已连接服务器 ...</p>').show();
+					$('#user-bar-username').html($.cookie('username'));
 					break;
 				case 'assigning':
 					reset();
-					$('#Connecting').html('<p>正在配桌 ...' + data + '</p>').show();
+					$('#Game').show();	
+					$('#game-waitting').html('正在配桌 ...').show();
+					$('#game-main').hide();
+					$('#game-chat').hide();
+					this.userid = data;
+					
+					$('#game-msgs-con').empty();
+					appendSysMsg('您已成功登录。');
 					break;
 				case 'desks-users':
 					setDesksUsersList(data);
 					break;
-				case 'sitdown':
-					reset();
-					$('#Game').show();			
-					$('#ready').show();
-					$('#draw').hide();
-					$('#lost').hide();
-					
-					$('#user-bar-username').html($.cookie('username'));
-								
-					$('#game-desk-tb tbody').empty();
-					$('#game-user-tb tbody').empty();
-					
-					$('#game-msgs-con').empty()
-					appendSysMsg('您已成功登录。');
+				case 'sitdown':		
 					appendSysMsg('新对决: ' + data.L + ' vs ' + data.R);
 					initGameBoard(data);
+					break;
+				case 'chat':
+					$('#game-chat-box').val($('#game-chat-box').val() + '\n' + data.username + ' 说： ' + data.msg);
+					break;
+				case 'ready':	
+					if(data.id == this.userid){	
+						$('#ready').hide();
+						$('#peace').show();
+						$('#lost').show();
+						$('#game-self-state').html('准备');
+					} else {
+						$('#game-rival-state').html('准备');
+					}
+					break;
+				case 'game':
+						
 					break;
 			}
 		}
