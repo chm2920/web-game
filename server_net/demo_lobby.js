@@ -109,8 +109,8 @@ Lobby.prototype.userLogin = function(data){
 	var u = new User(data.id, data.data.data);
 	this.users.push(u);
 	var response = {
-		'type': 'msg',
-		'data': data.data.data + ' join in '
+		'type': 'join',
+		'data': data.data.data
 	};
 	this.except(data.id, response);
 	response = {
@@ -170,7 +170,7 @@ Lobby.prototype.chat = function(data){
 			'type': 'chat',
 			'data': {
 				'username': u.username,				
-				'msg': data.data
+				'msg': data.data.data
 			}
 		};
 		desk.broadcast(response);
