@@ -137,8 +137,14 @@ Lobby.prototype.assign = function(u){
 			var response = {
 				'type': 'sitdown',
 				'data': {
-					'L': this.users[i].username,
-					'R': u.username
+					'L': {
+						'id': this.users[i].id,
+						'username': this.users[i].username
+					},
+					'R': {
+						'id': u.id,
+						'username': u.username
+					}
 				}
 			};
 			desk.broadcast(response);
@@ -148,16 +154,29 @@ Lobby.prototype.assign = function(u){
 }
 
 Lobby.prototype.logout = function(id){
-	var u = this.findUser(id);
-	this.leaveDesk(u);
+	delete this.manager[id];
+	var u = this.findUser(id),
+		desk = this.findDesk(u.deskno);
 	this.users.splice(this.users.indexOf(u), 1);
-	var response = {};
-	response['type'] = 'msg';
-	response['action'] = 'getup';
-	response['data'] = {
-		'username': u.username,
-		'deskno': u.deskno,
-		'side': u.side
+	if(desk){
+		var r;
+		if(desk.L == u.id){
+			r = this.findUser(desk.R);
+		} else {
+			r = this.findUser(desk.L);
+		}
+		r.status = 'waiting';
+		r.deskno = '';
+		r.side = '';
+		r.win += 1;
+		this.desks.splice(this.desks.indexOf(desk), 1);
+	}
+	var response = {
+		'type': 'leave',
+		'data': {
+			'id': u.id,
+			'username': u.username
+		}
 	};
 	this.broadcast(response);
 }
@@ -205,52 +224,42 @@ Lobby.prototype.ready = function(id){
 	}
 }
 
-Lobby.prototype.random = function(id){
-	var u = this.findUser(id);
-	var desk = this.desks[u.deskno-1];
-	desk.game.random();
-	var response = {};
-	response['type'] = 'msg';
-	response['action'] = 'game';
-	response['data'] = desk.game.ps;
-	desk.broadcast(response);
-}
-
 Lobby.prototype.check = function(id, data){
-	var u = this.findUser(id);
-	var desk = this.desks[u.deskno-1];
-	var game = desk.game;
+	var u = this.findUser(id),
+		desk = this.findDesk(u.deskno),
+		game = desk.game;
 	// check turn
 	if(game.turn != u.side){
 		return;
 	}
-	var p = game.p(data.x, data.y);
-	var d;
-	
-	var response = {};
-	response['type'] = 'msg';
+	var p = game.p(data.x, data.y),
+		response = {};
 	// unopen -> open
 	// open -> opened
 	if(p.v == 'f'){
-		p.v = 't';
-		response['action'] = 'check';
-		d = {
-			x: data.x,
-			y: data.y,
-			s: p.side,
-			c: p.chess
+		response = {
+			'type': 'check',
+			'data': {
+				x: data.x,
+				y: data.y,
+				s: p.side,
+				c: p.chess
+			}
 		};
+		p.v = 't';
 		game.next();
 	} else {
 		if(u.check && u.check.canEat(p)){
-			response['action'] = 'move';
-			d = {
-				x: u.check.x,
-				y: u.check.y,
-				to_x: data.x,
-				to_y: data.y,
-				s: p.side,
-				c: p.chess,
+			response = {
+				'type': 'move',
+				'data': {
+					x: u.check.x,
+					y: u.check.y,
+					to_x: data.x,
+					to_y: data.y,
+					s: p.side,
+					c: p.chess
+				}
 			};
 			p.chess = u.check.chess;
 			p.side = u.check.side;
@@ -260,15 +269,14 @@ Lobby.prototype.check = function(id, data){
 			game.next();
 		} else {
 			if(p.chess != '' && p.side == u.side){
-				console.log(p.chess);
-				console.log(p.side);
-				console.log(u.side);
-				response['action'] = 'op';
-				d = {
-					x: data.x,
-					y: data.y,
-					s: p.side,
-					c: p.chess
+				response = {
+					'type': 'select',
+					'data': {
+						x: data.x,
+						y: data.y,
+						s: p.side,
+						c: p.chess
+					}
 				};
 				u.check = p;
 			} else {
@@ -276,18 +284,5 @@ Lobby.prototype.check = function(id, data){
 			}			
 		}
 	}
-	response['data'] = d;
 	desk.broadcast(response);	
-}
-
-Lobby.prototype.move = function(id, data){
-	var u = this.findUser(id);
-	var desk = this.desks[u.deskno-1];
-	var game = desk.game;
-}
-
-Lobby.prototype.game = function(id){
-	var u = this.findUser(id);
-	var desk = this.desks[u.deskno-1];
-	var game = desk.game;
 }

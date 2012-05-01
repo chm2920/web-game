@@ -65,6 +65,9 @@ var controller = (function(){
 					case 'over':
 						g.on('over', data.data);
 						break;
+					case 'leave':
+						g.on('leave', data.data);
+						break;
 				}
 			}
 		},
@@ -91,13 +94,6 @@ var controller = (function(){
 				case 'check':
 					p = {
 						'action': 'check',
-						'data': data
-					};
-					sendData(p);
-					break;
-				case 'move':
-					p = {
-						'action': 'move',
 						'data': data
 					};
 					sendData(p);
@@ -158,11 +154,11 @@ P.prototype = {
 	selected: function(){
 		var arr = this.getSbilings();
 		for(var i = 0, l = arr.length; i < l; i ++){
-			$('#' + arr[i].id).addClass('op');
+			$('#' + arr[i].id).addClass('mrange');
 		}
 		$('#' + this.id).addClass('selected');
 	},
-	click: function(){
+	onClick: function(){
 		controller.op('check', {x: this.x, y: this.y});
 	},
 	clear: function(){
@@ -171,11 +167,7 @@ P.prototype = {
 	}
 }
 
-var g = (function(){
-	
-	this.userid = '';
-	this.nodes = [];
-	
+var g = (function(){	
 	function init(){
 		reset();
 		$('#Login').show();
@@ -291,6 +283,7 @@ var g = (function(){
 		$('#game-waitting').hide();
 		$('#game-main').show();
 		$('#game-chat').show();
+		$('#game-chat-box').empty();
 		
 		$('#ready').show();
 		$('#draw').hide();
@@ -308,9 +301,18 @@ var g = (function(){
 		arrT.push('</table>');
 		$('#gameboard').html(arrT.join(''));
 		
-		$('#game-rival-name').html(data.L);
+		if(data.L.id == g.userid){
+			g.side = 'L';
+			g.rivalId = data.R.id;
+			$('#game-rival-name').html('<span class="R">' + data.R.username + '</span>');
+			$('#game-self-name').html('<span class="L">' + data.L.username + '</span>');
+		} else {
+			g.side = 'R';
+			g.rivalId = data.L.id;
+			$('#game-rival-name').html('<span class="L">' + data.L.username + '</span>');
+			$('#game-self-name').html('<span class="R">' + data.R.username + '</span>');		
+		}
 		$('#game-rival-state').empty();
-		$('#game-self-name').html(data.R);
 		$('#game-self-state').empty();		
 		
 		$('#ready').unbind().click(function(event){
@@ -338,12 +340,18 @@ var g = (function(){
 	}
 	
 	function game(data){
+		$('#ready').hide();
+		$('#draw').hide();
+		$('#lost').hide();
+		$('#game-rival-state').empty();
+		$('#game-self-state').empty();
+		
 		var arrT = [];
 		arrT.push('<table class="gaming">');
 		for(var i = 1; i < 7; i ++){
 			arrT.push('<tr>');
 			for(var j = 1; j < 7; j ++){
-				this.nodes.push(new P(j, i));
+				g.nodes.push(new P(j, i));
 				arrT.push('	<td id="d_' + j + '_' + i + '">');
 				arrT.push(' </td>');
 			}
@@ -353,37 +361,90 @@ var g = (function(){
 		$('#gameboard').html(arrT.join(''));
 		
 		for(var i = 0, l = data.length; i < l; i ++){
-			$('#d_' + data[i].x + '_' + data[i].y).html('<img src="images/headpic/g02.jpg" title="' + data[i].side + '_' + data[i].chess + '" width="80" height="80">');
+			$('#d_' + data[i].x + '_' + data[i].y).html('<img src="images/headpic/g02.jpg" title="' + data[i].side + '_' + data[i].chess + '" />');
 		}
 		var self = this;
-		$('#gameboard td').click(function(e){
+		$('#gameboard td').unbind().click(function(e){
 			e.preventDefault();
-			e.stopPropration();
-			self.clickNode(this);
-			var arr = $(this).attr('id').split('_');
-			var p = self.findP(arr[1], arr[2]);
-			p.click();
+			var arr = this.id.split('_');
+			var p = g.findP(arr[1], arr[2]);
+			p.onClick();
 		});
 	}
 	
-	function check(data){
+	function turn(data){
+		$('#game-rival-state').empty();
+		$('#game-self-state').empty();
+		if(g.side == data.side){			
+			$('#game-self-state').html('<span class="' + g.side + '">' + data.seconds + '</span>');
+		} else {
+			$('#game-rival-state').html('<span class="' + g.side + '">' + data.seconds + '</span>');
+		}
+	}
+	
+	function onCheck(data){
 		$('#gameboard td').removeClass();
-		var p = P.find(data.x, data.y);
+		var p = g.findP(data.x, data.y);
 		p.chess = data.c;
 		p.side = data.s;
 		p.v = true;
 		$('#d_' + data.x + '_' + data.y + ' img').attr('src', 'images/src/' + data.s + '_' + data.c + '.png');
 	}
 	
-	return {
+	function onSelect(data){
+		$('#gameboard td').removeClass();
+		var p = g.findP(data.x, data.y);
+		p.selected();
+	}
+	
+	function onMove(data){
+		$('#gameboard td').removeClass();
+		var p1 = g.findP(data.x, data.y);
+		var p2 = g.findP(data.to_x, data.to_y);
+		$('#' + p2.id).html('<img src="images/src/' + p1.side + '_' + p1.chess + '.png" title="' + p1.side + '_' + p1.chess + '" />');
+		$('#' + p1.id).html('');
+		p2.chess = p1.chess;
+		p2.side = p1.side;
+		p1.clear();
+	}
+	
+	function onOver(data){
+		if(data.winSide == g.side){
+			$('#game-rival-state').html('失败');
+			$('#game-self-state').html('胜利');
+		} else {
+			$('#game-rival-state').html('失败');
+			$('#game-self-state').html('胜利');
+		}
+		$('#ready').show();
+		g.nodes = [];
+	}
+	
+	function onLeave(data){
+		if(data.id == g.rivalId){
+			reset();
+			$('#Game').show();	
+			$('#game-waitting').html('正在配桌 ...').show();
+			$('#game-main').hide();
+			$('#game-chat').hide();
+		}
+		appendSysMsg('<span>' + data.username + '</span>离开游戏');
+	}
+	
+	return {		
+		userid : '',
+		side : '',
+		nodes : [],
+		rivalId: '',
+		
 		init: function(){
 			init();
 		},
 		
 		findP: function(x, y){
-			for(var i = 0, l = this.nodes.length; i < l;i ++){
-				if(this.nodes[i].id == 'd_' + x + '_' + y){
-					return this.nodes[i];
+			for(var i = 0, l = g.nodes.length; i < l;i ++){
+				if(g.nodes[i].id == 'd_' + x + '_' + y){
+					return g.nodes[i];
 				}
 			}
 		},
@@ -412,7 +473,7 @@ var g = (function(){
 					$('#game-main').hide();
 					$('#game-chat').hide();
 					
-					this.userid = data;
+					g.userid = data;
 					
 					$('#game-msgs-con').empty();
 					appendSysMsg('您已成功登录。');
@@ -421,17 +482,17 @@ var g = (function(){
 					setDesksUsersList(data);
 					break;
 				case 'sitdown':		
-					appendSysMsg('新对决:<span>' + data.L + '</span> vs <span>' + data.R + '</span>');
+					appendSysMsg('新对决:<span>' + data.L.username + '</span> vs <span>' + data.R.username + '</span>');
 					initGameBoard(data);
 					break;
 				case 'chat':
 					$('#game-chat-box').append('<p><span>' + data.username + '</span>说： ' + data.msg + '</p>').scrollTop(20000000);
 					break;
 				case 'ready':
-					if(data == this.userid){	
+					if(data == g.userid){	
 						$('#ready').hide();
-						$('#peace').show();
-						$('#lost').show();
+						$('#draw').hide();
+						$('#lost').hide();
 						$('#game-self-state').html('准备');
 					} else {
 						$('#game-rival-state').html('准备');
@@ -441,19 +502,22 @@ var g = (function(){
 					game(data);
 					break;
 				case 'turn':
-						
+					turn(data);
 					break;
 				case 'check':
-						
+					onCheck(data);
 					break;
 				case 'select':
-						
+					onSelect(data);
 					break;
 				case 'move':
-						
+					onMove(data);
 					break;
 				case 'over':
-						
+					onOver(data);
+					break;
+				case 'leave':
+					onLeave(data);
 					break;
 			}
 		}

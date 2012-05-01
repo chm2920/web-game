@@ -25,7 +25,7 @@ ws.createServer(function (socket) {
 					break;
 				};
 			};
-			//lobby.logout(socketid);
+			lobby.logout(socketid);
 		})
 		.addListener("data", function (data) { 
 			var get = {
@@ -43,23 +43,8 @@ ws.createServer(function (socket) {
 				case 'ready':
 					lobby.ready(get.id);
 					break;
-				case 'sit':
-					lobby.sit(data.id, data.data.data.deskno, data.data.data.side);
-					break;
-				case 'getup':
-					lobby.getup(data.id);
-					break;
-				case 'game':
-					lobby.game(data.id);
-					break;
 				case 'check':
-					lobby.check(data.id, data.data.data);
-					break;
-				case 'move':
-					lobby.move(data.id, data.data);
-					break;
-				case 'random':
-					lobby.random(data.id);
+					lobby.check(get.id, get.data.data);
 					break;
 			}
 		});

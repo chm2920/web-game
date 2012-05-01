@@ -94,8 +94,6 @@ Game.prototype.next = function(){
 
 Game.prototype.over = function(){
 	clearInterval(this.inter);
-	var desk = this.desk;
-	desk.status = 5;
 	
 	var winSide, lostSide, user;
 	if(this.turn == 'L'){
@@ -105,18 +103,18 @@ Game.prototype.over = function(){
 		winSide = 'L';
 		lostSide = 'R';
 	}
-	user = desk[winSide];
+	user = this.desk[winSide];
 	user.win += 1;
-	user.status = '';
-	user = desk[lostSide];
+	user.status = 'pending';
+	user = this.desk[lostSide];
 	user.lost += 1;
-	user.status = '';
+	user.status = 'pending';
 	
-	var response = {};
-	response['type'] = 'msg';
-	response['action'] = 'over';
-	response['data'] = {
-		'side': winSide
+	var response = {
+		'type': 'over',
+		'data': {
+			'winSide': winSide
+		}
 	};
-	desk.broadcast(response);
+	this.desk.broadcast(response);
 }
