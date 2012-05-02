@@ -159,16 +159,19 @@ Lobby.prototype.logout = function(id){
 		desk = this.findDesk(u.deskno);
 	this.users.splice(this.users.indexOf(u), 1);
 	if(desk){
-		var r;
-		if(desk.L == u.id){
-			r = this.findUser(desk.R);
-		} else {
-			r = this.findUser(desk.L);
+		if(desk.game){
+			clearInterval(desk.game.inter);
+			var r;
+			if(desk.L == u.id){
+				r = this.findUser(desk.R);
+			} else {
+				r = this.findUser(desk.L);
+			}
+			r.status = 'waiting';
+			r.deskno = '';
+			r.side = '';
+			r.win += 1;
 		}
-		r.status = 'waiting';
-		r.deskno = '';
-		r.side = '';
-		r.win += 1;
 		this.desks.splice(this.desks.indexOf(desk), 1);
 	}
 	var response = {

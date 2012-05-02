@@ -1,7 +1,7 @@
 
 var controller = (function(){
 	var socket,
-		server = 'localhost',
+		server = document.location.host == 'localhost' ? 'localhost' : '173.252.248.156',
 		port = 27688;
 	
 	function sendData(data){
@@ -413,8 +413,8 @@ var g = (function(){
 			$('#game-rival-state').html('失败');
 			$('#game-self-state').html('胜利');
 		} else {
-			$('#game-rival-state').html('失败');
-			$('#game-self-state').html('胜利');
+			$('#game-rival-state').html('胜利');
+			$('#game-self-state').html('失败');
 		}
 		$('#ready').show();
 		g.nodes = [];

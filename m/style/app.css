@@ -31,12 +31,19 @@ img{border:0px;}
 	#Connecting p{margin-top:160px;text-align:center;font-size:18px;}
 
 #Game{}
+	.game-waitting{padding:160px 0 0 0;text-align:center;font-size:18px;}
 	.competitors{padding:0 30px;height:30px;line-height:30px;font-weight:normal;}
 		.competitors .cur{font-weight:bold;}
-	.left-c{float:left;display:inline;color:#FF0000;}
-	.right-c{float:right;display:inline;color:blue;}
+		.competitors .L{color:blue;}
+		.competitors .R{color:#FF0000;}
+	.c-rival{float:left;display:inline;}
+	.c-self{float:right;display:inline;}
 	.gameboard{}
-		.gameboard table{margin:0 auto;width:270px;border:1px solid #CCC; border-collapse:collapse;}
-		.gameboard table td{height:45px;line-height:30px;border:1px solid #CCC;}
+		.gameboard table{margin:0 auto;border:1px solid #CCC; border-collapse:collapse;}
+		.gameboard table td{width:45px;height:45px;line-height:30px;border:1px solid #CCC;}
+		.gameboard table.gaming td{cursor:pointer;}
+		.gameboard table.gaming td.selected{border:1px solid red;}
+		.gameboard table.gaming td.mrange{border:1px solid blue;}
+		.gameboard table.gaming td img{width:45px;height:45px;}
 	.opeartion{margin-top:20px;text-align:center;}
 		.opeartion a{margin:0 10px;padding:6px 20px;border:1px solid #CCC;background:#EEE;display:none;}
