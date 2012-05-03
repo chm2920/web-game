@@ -1,14 +1,24 @@
-var spawn = require('child_process').spawn;
-var tail = spawn("tail", ['-f', 'tail.html']);
-  
-console.log('starting');
 
 
-var net = require("net");
-var server = net.createServer();
-server.addListener("connection", function(connection){
-	tail.stdout.on('data',function(data) {
-		server.broadcast(data);
+var spawn = require('child_process').spawn,
+	tail = spawn("tail", ['-f', 'nohup.out']),
+	ws = require("./ws");
+
+ws.createServer(function (socket) {
+	tail.stdout.on('data', function(data) {
+		try{
+			socket.write(data);
+		} catch(e) {
+			console.log(e);
+		}
 	});
-});
-server.listen(8001, "127.0.0.1");
+	socket
+		.addListener("connect", function (socketid) { 
+		})
+		.addListener("close", function (socketid) { 
+			socket.end();
+		})
+		.addListener("data", function (data) { 
+		});
+}).listen(27689);
+		

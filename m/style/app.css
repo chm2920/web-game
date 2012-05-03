@@ -18,6 +18,7 @@ img{border:0px;}
 
 #Login{}
 	.logo{padding:40px 0 0 0;font-size:36px;font-weight:bold;}
+	.not-support{padding:40px 0;}
 	.user-info{margin-top:40px;line-height:30px;font-size:14px;}
 		.user-name{}
 			.user-name span{font-size:24px;font-weight:bold;}

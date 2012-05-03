@@ -12,7 +12,7 @@ ws.createServer(function (socket) {
 	socket
 		.addListener("connect", function (socketid) { 
 			conns_count ++;
-			sys_log("Welcome socketid[" + socketid + '] in Conns[' + conns_count + ']');
+			console.log("Welcome socketid[", socketid, '] at ', socket.remoteAddress, ' in Conns[', conns_count, ']');
 			lobby.manager[socketid] = socket;
 		})
 		.addListener("close", function (socketid) { 
@@ -32,7 +32,7 @@ ws.createServer(function (socket) {
 					id: data.socketid,
 					data: JSON.parse(data.data)
 				};
-			console.log(get);
+			console.log(get.id, ' post ', get.data);
 			switch(get.data.action){
 				case 'login':
 					lobby.userLogin(get);								

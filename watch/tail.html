@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>tail -f development.log</title>
+		<title>log</title>
+	</head>
+	<body>
+		<div id="showData"></div>
 		<script>
+			var socket,
+				server = document.location.host == 'localhost' ? 'localhost' : '173.252.248.156',
+				port = 27689;
+				
 			function showText(t){
 				document.querySelector('#showData').innerHTML += t;
 			}
 			if(!window.WebSocket){
-				alert('Your browser not Support websocket!');
+				showText('Your browser not Support websocket!');
 			} else {
-				var ws = new WebSocket('ws://72.46.136.201:8001');
+				var ws = new WebSocket('ws://' + server + ':' + port + '/log', 'nxyouxi-protocol');
 				ws.onopen = function(e){
 					showText('Websocket opened!');
 				};
@@ -20,15 +27,9 @@
 					showText('WebSocket error!');
 				};
 				ws.onmessage = function(e){
-					showText("<br /><br />" + e.data);
+					showText("<br />" + e.data.replace(/\n/g, '<br />'));
 				};
 			}
-			function send(){
-				ws.send('a');
-			}
 		</script>
-	</head>
-	<body>
-		<div id="showData"></div>
 	</body>
 </html>
