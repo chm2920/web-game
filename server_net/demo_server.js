@@ -12,7 +12,9 @@ ws.createServer(function (socket) {
 	socket
 		.addListener("connect", function (socketid) { 
 			conns_count ++;
-			console.log("Welcome socketid[", socketid, '] at ', socket.remoteAddress, ' in Conns[', conns_count, ']');
+			var now = new Date();
+			now = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate() + ' ' + now.getHours() + ':' + now.getMinutes();
+			console.log('->', "Welcome socketid[", socketid, '] at ', now, ' from ', socket.remoteAddress, ' in Conns[', conns_count, ']');
 			lobby.manager[socketid] = socket;
 		})
 		.addListener("close", function (socketid) { 
@@ -21,7 +23,7 @@ ws.createServer(function (socket) {
 					socket.end();
 					delete lobby.manager[k];
 					conns_count --;
-					sys_log("delete " + k);
+					console.log('<-', k, 'logout');
 					break;
 				};
 			};

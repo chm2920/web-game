@@ -184,6 +184,8 @@ Lobby.prototype.logout = function(id){
 			}
 		};
 		this.broadcast(response);
+	} else {
+		console.log('error: userid -> ', id);
 	}
 }
 
