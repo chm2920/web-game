@@ -155,34 +155,36 @@ Lobby.prototype.assign = function(u){
 
 Lobby.prototype.logout = function(id){
 	var u = this.findUser(id);	
-	this.users.splice(this.users.indexOf(u), 1);
-	if(u.deskno){
-		var desk = this.findDesk(u.deskno);
-		if(desk){
-			if(desk.game && desk.game.inter){
-				clearInterval(desk.game.inter);
-				var r;
-				if(desk.L == u.id){
-					r = this.findUser(desk.R);
-				} else {
-					r = this.findUser(desk.L);
+	if(u){
+		this.users.splice(this.users.indexOf(u), 1);
+		if(u.deskno){
+			var desk = this.findDesk(u.deskno);
+			if(desk){
+				if(desk.game && desk.game.inter){
+					clearInterval(desk.game.inter);
+					var r;
+					if(desk.L == u.id){
+						r = this.findUser(desk.R);
+					} else {
+						r = this.findUser(desk.L);
+					}
+					r.status = 'waiting';
+					r.deskno = '';
+					r.side = '';
+					r.win += 1;
 				}
-				r.status = 'waiting';
-				r.deskno = '';
-				r.side = '';
-				r.win += 1;
+				this.desks.splice(this.desks.indexOf(desk), 1);
 			}
-			this.desks.splice(this.desks.indexOf(desk), 1);
 		}
+		var response = {
+			'type': 'leave',
+			'data': {
+				'id': u.id,
+				'username': u.username
+			}
+		};
+		this.broadcast(response);
 	}
-	var response = {
-		'type': 'leave',
-		'data': {
-			'id': u.id,
-			'username': u.username
-		}
-	};
-	this.broadcast(response);
 }
 
 Lobby.prototype.chat = function(data){
