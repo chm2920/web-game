@@ -48,6 +48,12 @@ ws.createServer(function (socket) {
 				case 'check':
 					lobby.check(get.id, get.data.data);
 					break;
+				case 'draw':
+					lobby.draw(get.id);
+					break;
+				case 'lost':
+					lobby.lost(get.id);
+					break;
 			}
 		});
 }).listen(27688);

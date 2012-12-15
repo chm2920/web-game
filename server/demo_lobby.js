@@ -294,3 +294,11 @@ Lobby.prototype.check = function(id, data){
 	}
 	desk.broadcast(response);	
 }
+
+Lobby.prototype.draw = function(id){
+	
+}
+
+Lobby.prototype.lost = function(id){
+	
+}

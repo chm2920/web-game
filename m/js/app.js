@@ -1,7 +1,21 @@
 
 var controller = (function(){
 	var socket,
-		server = document.location.host == 'localhost' ? 'localhost' : '173.252.248.156',
+		server = (function(){
+				var re;
+				switch(document.location.host){
+					case 'localhost':
+						re = 'localhost';
+						break;
+					case 'game.nxyouxi.com':
+						re = '173.252.248.156';
+						break;
+					default:
+						re = '58.215.176.112';
+						break;
+				}
+				return re;
+			})(),
 		port = 27688;
 	
 	function sendData(data){

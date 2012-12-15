@@ -1,7 +1,21 @@
 
 var controller = (function(){
 	var socket,
-		server = document.location.host == 'localhost' ? 'localhost' : '173.252.248.156',
+		server = (function(){
+				var re;
+				switch(document.location.host){
+					case 'localhost':
+						re = 'localhost';
+						break;
+					case 'game.nxyouxi.com':
+						re = '173.252.248.156';
+						break;
+					default:
+						re = '58.215.176.112';
+						break;
+				}
+				return re;
+			})(),
 		port = 27688;
 	
 	function sendData(data){
@@ -68,6 +82,12 @@ var controller = (function(){
 					case 'leave':
 						g.on('leave', data.data);
 						break;
+					case 'draw':
+						g.on('leave', data.data);
+						break;
+					case 'lost':
+						g.on('leave', data.data);
+						break;
 				}
 			}
 		},
@@ -95,6 +115,18 @@ var controller = (function(){
 					p = {
 						'action': 'check',
 						'data': data
+					};
+					sendData(p);
+					break;
+				case 'draw':
+					p = {
+						'action': 'draw'
+					};
+					sendData(p);
+					break;
+				case 'lost':
+					p = {
+						'action': 'lost'
 					};
 					sendData(p);
 					break;
@@ -320,11 +352,14 @@ var g = (function(){
 			controller.op('ready');	
 		});
 		
-		$('#draw, #lost').unbind().click(function(event){
+		$('#draw').unbind().click(function(event){
 			event.preventDefault();
-			$('#ready').show();
-			$('#draw').hide();
-			$('#lost').hide();
+			controller.op('draw');	
+		});
+		
+		$('#lost').unbind().click(function(event){
+			event.preventDefault();
+			controller.op('lost');	
 		});
 		
 		$('#game-chat-input').unbind().keydown(function(event){
@@ -431,6 +466,14 @@ var g = (function(){
 		appendSysMsg('<span>' + data.username + '</span>离开游戏');
 	}
 	
+	function onDraw(data){
+		
+	}
+	
+	function onLost(data){
+		
+	}
+	
 	return {		
 		userid : '',
 		side : '',
@@ -518,6 +561,12 @@ var g = (function(){
 					break;
 				case 'leave':
 					onLeave(data);
+					break;
+				case 'draw':
+					onDraw(data);
+					break;
+				case 'lost':
+					onLost(data);
 					break;
 			}
 		}
