@@ -1,2 +1,13 @@
 
 A Javascript Game based Websocket.
+
+
+
+Note:
+
+
+cd watch
+
+nohup node ../server/demo_server.js &
+
+nohup node watch.js &
