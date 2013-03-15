@@ -16,7 +16,7 @@
 			if(!window.WebSocket){
 				showText('Your browser not Support websocket!');
 			} else {
-				var ws = new WebSocket('ws://' + server + ':' + port + '/log', 'nxyouxi-protocol');
+				var ws = new WebSocket('ws://' + document.location.host + ':' + port + '/log', 'nxyouxi-protocol');
 				ws.onopen = function(e){
 					showText('Websocket opened!');
 				};
