@@ -24,7 +24,7 @@ var controller = (function(){
 		
 	return {
 		connect: function(){
-			socket = new WebSocket('ws://' + server + ':' + port + '/test', 'nxyouxi-protocol');
+			socket = new WebSocket('ws://' + document.location.host + ':' + port + '/test', 'nxyouxi-protocol');
 			socket.onopen = function(e) {
 				var data = {
 					'action': 'login',
